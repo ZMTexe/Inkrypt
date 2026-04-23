@@ -1,87 +1,86 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>INKRYPT — Chiffrement AES-GCM</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INKRYPT // VAULT STATION</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
-<body>
+<body class="matrix-theme">
 
-  <canvas id="matrix-bg"></canvas>
-  <div class="noise"></div>
-  <div class="grid-bg"></div>
+    <canvas id="matrix-bg"></canvas>
 
-  <header>
-    <div class="logo">
-      <span class="logo-bracket">[</span>
-      <span class="logo-text">INK<span class="accent">RYPT</span></span>
-      <span class="logo-bracket">]</span>
+    <div class="app-layout">
+        
+        <aside class="sidebar-obsidian">
+            <div class="sidebar-header">
+                <div class="status-dot"></div>
+                <span class="vault-title">[K] VAULT</span>
+                <button id="add-note-btn" class="icon-btn">+</button>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" id="note-search" placeholder="SCAN_DATABASE...">
+            </div>
+
+            <nav id="note-list" class="file-tree">
+                </nav>
+        </aside>
+
+        <main class="terminal-container">
+            
+            <header class="terminal-header">
+                <div class="brand">
+                    <span class="glitch" data-text="INKRYPT">INKRYPT</span>
+                    <span class="version">V2.0.4-STABLE</span>
+                </div>
+                <div class="nav-tabs">
+                    <button class="tab-link active" onclick="showView('decrypt')">DECRYPT_CORE</button>
+                    <button class="tab-link" onclick="showView('notes')">NOTE_EDITOR</button>
+                </div>
+            </header>
+
+            <section id="view-decrypt" class="view-content active">
+                <div class="crypto-card">
+                    <div class="card-label">>> MESSAGE_SOURCE</div>
+                    <textarea id="message" placeholder="Entrez votre texte ici..."></textarea>
+                    
+                    <div class="card-label">>> CLÉ_SECRÈTE (MIN. 8 CARACTÈRES)</div>
+                    <div class="input-wrapper">
+                        <input type="password" id="secret" placeholder="Il faut une clé robuste">
+                        <button class="view-toggle" onclick="togglePass()">👁</button>
+                    </div>
+
+                    <div class="button-group">
+                        <button id="btn-encrypt" class="btn-main neon-glow">⬢ CHIFFRER</button>
+                        <button id="btn-decrypt" class="btn-main secondary">⬢ DÉCHIFFRER</button>
+                    </div>
+
+                    <div class="card-label">>> RÉSULTAT</div>
+                    <div class="result-wrapper">
+                        <textarea id="result" readonly placeholder="Le résultat apparaîtra ici..."></textarea>
+                        <button class="copy-btn" onclick="copyToClipboard()">⎘</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-notes" class="view-content">
+                <div class="obsidian-editor">
+                    <input type="text" id="note-title-input" class="note-title" placeholder="Titre de la note...">
+                    <div class="editor-split">
+                        <textarea id="note-textarea" placeholder="Tapez votre note (Markdown supporté)..."></textarea>
+                        <div id="markdown-preview" class="preview-area"></div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
     </div>
-    <p class="tagline">· WebCrypto · Zero dépendance · Par Fego.exe</p>
-  </header>
 
-  <main>
-    <div class="card" id="card">
-
-      <div class="field-group">
-        <label for="message">
-          <span class="label-icon">▸</span> MESSAGE SOURCE
-        </label>
-        <textarea id="message" placeholder="Entrez votre texte ici…" rows="4" spellcheck="false"></textarea>
-      </div>
-
-      <div class="field-group">
-        <label for="secret">
-          <span class="label-icon">▸</span> CLÉ SECRÈTE
-          <span class="key-hint">min. 8 caractères</span>
-        </label>
-        <div class="input-row">
-          <input type="password" id="secret" placeholder="Il faut une clé Robuste" autocomplete="off" />
-          <button class="btn-icon" id="togglePwd" title="Afficher/Masquer" aria-label="toggle password">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
-        </div>
-        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
-      </div>
-
-      <div class="actions">
-        <button class="btn btn-primary" id="btnEncrypt">
-          <span class="btn-glyph">⬡</span> CHIFFRER
-        </button>
-        <button class="btn btn-secondary" id="btnDecrypt">
-          <span class="btn-glyph">⬡</span> DÉCHIFFRER
-        </button>
-      </div>
-
-      <div class="field-group result-group">
-        <label for="result">
-          <span class="label-icon">◈</span> RÉSULTAT
-          <span class="status-dot" id="statusDot"></span>
-        </label>
-        <div class="result-wrap">
-          <textarea id="result" placeholder="Le résultat apparaîtra ici…" rows="4" readonly spellcheck="false"></textarea>
-          <button class="btn-copy" id="btnCopy" title="Copier le résultat">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </main>
-
-  <div class="toast" id="toast">
-    <span class="toast-icon">✓</span> Copié dans le presse-papiers
-  </div>
-
-  <footer>
-    <span>Inkrypt · Tout le traitement est local · Aucune donnée transmise</span>
-  </footer>
-
-  <script src="script.js"></script>
-  <!-- built with ♥ -->
+    <script src="js/matrix.js"></script>
+    <script src="js/crypt.js"></script>
+    <script src="js/obsidian.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
