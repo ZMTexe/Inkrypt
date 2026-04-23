@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>INKRYPT — Suite de sécurité</title>
+  <title>INKRYPT — Chiffrement AES-GCM</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
 </head>
 <body>
 
@@ -13,206 +12,73 @@
   <div class="noise"></div>
   <div class="grid-bg"></div>
 
-  <!-- ══════════════════════════════════════
-       SIDEBAR
-  ══════════════════════════════════════ -->
-  <nav class="sidebar" id="sidebar">
-
-    <div class="sidebar-logo">
-      <span class="sb-logo-bracket">[</span>
-      <span class="sb-logo-text">INK<span class="accent">R</span></span>
-      <span class="sb-logo-bracket">]</span>
-      <span class="sb-logo-full">INKRYPT</span>
+  <header>
+    <div class="logo">
+      <span class="logo-bracket">[</span>
+      <span class="logo-text">INK<span class="accent">RYPT</span></span>
+      <span class="logo-bracket">]</span>
     </div>
+    <p class="tagline">AES-256-GCM · WebCrypto · Zero dépendance</p>
+  </header>
 
-    <ul class="sidebar-nav">
-      <li>
-        <button class="sb-btn active" data-module="cipher">
-          <span class="sb-icon">🔐</span>
-          <span class="sb-label">Chiffrement</span>
-        </button>
-      </li>
-      <li>
-        <button class="sb-btn" data-module="passwords">
-          <span class="sb-icon">🔑</span>
-          <span class="sb-label">Mots de passe</span>
-        </button>
-      </li>
-      <li>
-        <button class="sb-btn" data-module="notes">
-          <span class="sb-icon">📝</span>
-          <span class="sb-label">Notes sécurisées</span>
-        </button>
-      </li>
-      <li>
-        <button class="sb-btn" data-module="cleaner">
-          <span class="sb-icon">🧹</span>
-          <span class="sb-label">Nettoyage</span>
-        </button>
-      </li>
-    </ul>
+  <main>
+    <div class="card" id="card">
 
-    <div class="sidebar-bottom">
-      <button class="sb-btn sb-settings" id="sbToggle" title="Réduire/Étendre">
-        <span class="sb-icon">⟨</span>
-        <span class="sb-label">Réduire</span>
-      </button>
-    </div>
-
-  </nav>
-
-  <!-- ══════════════════════════════════════
-       CONTENU PRINCIPAL
-  ══════════════════════════════════════ -->
-  <div class="app-content" id="appContent">
-
-    <!-- ── Module Chiffrement ── -->
-    <div class="module-view" id="module-cipher">
-
-      <div class="module-header">
-        <h2 class="module-title"><span class="accent">🔐</span> Chiffrement AES-GCM</h2>
-        <p class="module-sub">AES-256-GCM · PBKDF2 · WebCrypto · Zero dépendance</p>
+      <div class="field-group">
+        <label for="message">
+          <span class="label-icon">▸</span> MESSAGE SOURCE
+        </label>
+        <textarea id="message" placeholder="Entrez votre texte ici…" rows="4" spellcheck="false"></textarea>
       </div>
 
-      <div class="cipher-layout">
-
-        <div class="card" id="card">
-
-          <div class="field-group">
-            <label for="message">
-              <span class="label-icon">▸</span> MESSAGE SOURCE
-            </label>
-            <textarea id="message" placeholder="Entrez votre texte ici…" rows="4" spellcheck="false"></textarea>
-          </div>
-
-          <div class="field-group">
-            <label for="secret">
-              <span class="label-icon">▸</span> CLÉ SECRÈTE
-              <span class="key-hint">min. 8 caractères</span>
-            </label>
-            <div class="input-row">
-              <input type="password" id="secret" placeholder="Passphrase…" autocomplete="off" />
-              <button class="btn-icon" id="togglePwd" title="Afficher/Masquer" aria-label="toggle password">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              </button>
-            </div>
-            <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
-            <div class="strength-label" id="strengthLabel">—</div>
-            <button class="btn-ghost" id="btnGenKey" type="button">⚡ Générer clé forte</button>
-          </div>
-
-          <div class="actions">
-            <button class="btn btn-primary" id="btnEncrypt">
-              <span class="btn-glyph">⬡</span> CHIFFRER
-            </button>
-            <button class="btn btn-secondary" id="btnDecrypt">
-              <span class="btn-glyph">⬡</span> DÉCHIFFRER
-            </button>
-          </div>
-
-          <details class="options-panel" id="optionsPanel">
-            <summary>⚙ Options avancées</summary>
-            <div class="options-grid">
-              <div class="field-group">
-                <label><span class="label-icon">▸</span> INDICE (non chiffré)</label>
-                <input type="text" id="optHint" placeholder="Ex: nom du chat…" maxlength="80" />
-              </div>
-              <div class="options-row">
-                <label class="toggle-label">
-                  <input type="checkbox" id="optOnce" />
-                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
-                  Lecture unique
-                </label>
-                <label class="toggle-label">
-                  <input type="checkbox" id="optNoTrace" />
-                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
-                  Mode sans trace
-                </label>
-              </div>
-              <div class="field-group">
-                <label><span class="label-icon">▸</span> EXPIRATION</label>
-                <select id="optExpiry">
-                  <option value="">Aucune</option>
-                  <option value="3600">1 heure</option>
-                  <option value="86400">24 heures</option>
-                  <option value="604800">7 jours</option>
-                  <option value="2592000">30 jours</option>
-                </select>
-              </div>
-            </div>
-          </details>
-
-          <div class="field-group result-group">
-            <label for="result">
-              <span class="label-icon">◈</span> RÉSULTAT
-              <span class="result-meta" id="resultMeta"></span>
-              <span class="status-dot" id="statusDot"></span>
-            </label>
-            <div id="hintDisplay" class="hint-display" hidden></div>
-            <div class="result-wrap">
-              <textarea id="result" placeholder="Le résultat apparaîtra ici…" rows="4" readonly spellcheck="false"></textarea>
-              <div class="result-actions">
-                <button class="btn-copy" id="btnCopy" title="Copier">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                </button>
-                <button class="btn-copy" id="btnDownload" title="Télécharger .inkrypt">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                </button>
-                <button class="btn-copy" id="btnShare" title="Copier lien">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-                </button>
-                <button class="btn-copy" id="btnClear" title="Vider tout">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                </button>
-              </div>
-            </div>
-            <div class="qr-wrap" id="qrWrap" hidden>
-              <div id="qrCode"></div>
-              <span class="qr-label">Scanner pour importer</span>
-            </div>
-          </div>
-
-        </div><!-- /#card -->
-
-        <!-- Mode Fichier -->
-        <div class="card" id="fileCard" style="margin-top:1rem;">
-          <div class="card-toggle" id="toggleFileMode">
-            <span class="label-icon">▸</span> MODE FICHIER
-            <span class="toggle-badge" id="fileBadge">off</span>
-          </div>
-          <div id="filePanel" hidden>
-            <div class="drop-zone" id="dropZone">
-              <span class="drop-icon">⬡</span>
-              <span class="drop-text">Glissez un fichier ici<br><small>ou cliquez pour parcourir</small></span>
-              <input type="file" id="fileInput" hidden />
-            </div>
-            <div class="file-info" id="fileInfo" hidden>
-              <span id="fileName">—</span>
-              <button class="btn-ghost btn-sm" id="btnClearFile">✕</button>
-            </div>
-            <div class="actions" style="margin-top:.75rem;">
-              <button class="btn btn-primary"   id="btnEncryptFile"><span class="btn-glyph">⬡</span> CHIFFRER FICHIER</button>
-              <button class="btn btn-secondary" id="btnDecryptFile"><span class="btn-glyph">⬡</span> DÉCHIFFRER</button>
-            </div>
-          </div>
+      <div class="field-group">
+        <label for="secret">
+          <span class="label-icon">▸</span> CLÉ SECRÈTE
+          <span class="key-hint">min. 8 caractères</span>
+        </label>
+        <div class="input-row">
+          <input type="password" id="secret" placeholder="Passphrase…" autocomplete="off" />
+          <button class="btn-icon" id="togglePwd" title="Afficher/Masquer" aria-label="toggle password">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
         </div>
+        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+      </div>
 
-      </div><!-- /.cipher-layout -->
-    </div><!-- /#module-cipher -->
+      <div class="actions">
+        <button class="btn btn-primary" id="btnEncrypt">
+          <span class="btn-glyph">⬡</span> CHIFFRER
+        </button>
+        <button class="btn btn-secondary" id="btnDecrypt">
+          <span class="btn-glyph">⬡</span> DÉCHIFFRER
+        </button>
+      </div>
 
-    <!-- Modules dynamiques (remplis par JS) -->
-    <div class="module-view" id="module-passwords" hidden></div>
-    <div class="module-view" id="module-notes"     hidden></div>
-    <div class="module-view" id="module-cleaner"   hidden></div>
+      <div class="field-group result-group">
+        <label for="result">
+          <span class="label-icon">◈</span> RÉSULTAT
+          <span class="status-dot" id="statusDot"></span>
+        </label>
+        <div class="result-wrap">
+          <textarea id="result" placeholder="Le résultat apparaîtra ici…" rows="4" readonly spellcheck="false"></textarea>
+          <button class="btn-copy" id="btnCopy" title="Copier le résultat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+      </div>
 
-  </div><!-- /.app-content -->
+    </div>
+  </main>
 
-  <!-- Toast global -->
   <div class="toast" id="toast">
-    <span class="toast-icon">✓</span><span id="toastMsg"> Copié dans le presse-papiers</span>
+    <span class="toast-icon">✓</span> Copié dans le presse-papiers
   </div>
 
-  <script type="module" src="script.js"></script>
+  <footer>
+    <span>Inkrypt · Tout le traitement est local · Aucune donnée transmise</span>
+  </footer>
+
+  <script src="script.js"></script>
   <!-- built with ♥ -->
 </body>
 </html>
