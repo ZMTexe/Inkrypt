@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body class="matrix-theme">
+
     <canvas id="matrix-bg"></canvas>
 
     <div class="app-layout">
@@ -22,15 +23,18 @@
             <div class="search-box">
                 <input type="text" id="note-search" placeholder="SCAN_DATABASE..." oninput="filterNotes()">
             </div>
-            <nav id="note-list" class="file-tree"></nav>
+            <nav id="note-list" class="file-tree">
+                </nav>
         </aside>
 
         <main class="terminal-container">
+            
             <header class="terminal-header">
                 <div class="brand">
                     <span class="logo-main"><span class="bracket">[</span> INK<span class="neon-text">RYPT</span> <span class="bracket">]</span></span>
-                    <span class="version"> PAR FEGO.EXE</span>
+                    <span class="version">WEBCRYPTO · ZERO DÉPENDANCE · PAR FEGO.EXE</span>
                 </div>
+                
                 <div class="nav-tabs">
                     <button id="tab-decrypt" class="tab-link active" onclick="showView('decrypt')">DECRYPT_CORE</button>
                     <button id="tab-notes" class="tab-link" onclick="showView('notes')">NOTE_EDITOR</button>
@@ -42,10 +46,13 @@
                     <div class="card-label">▶ MESSAGE SOURCE</div>
                     <textarea id="message" placeholder="Entrez votre texte ici..."></textarea>
                     
-                    <div class="card-label">▶ CLÉ SECRÈTE <span class="min-char">MIN. 8 CARACTÈRES</span></div>
-                    <div class="input-wrapper">
-                        <input type="password" id="secret" placeholder="Clé de chiffrement...">
-                        <button class="view-toggle" onclick="togglePass()">👁</button>
+                    <div class="card-label">
+                        <span>▶ CLÉ SECRÈTE</span>
+                        <span style="font-size: 0.5rem; opacity: 0.6;">MIN. 8 CARACTÈRES</span>
+                    </div>
+                    <div class="input-wrapper" style="position: relative;">
+                        <input type="password" id="secret" placeholder="Il faut une clé robuste">
+                        <button class="view-toggle" onclick="togglePass()" style="position: absolute; right: 15px; top: 12px; background: none; border: none; color: var(--neon); cursor: pointer; font-size: 1.2rem;">👁</button>
                     </div>
 
                     <div class="button-group">
@@ -53,10 +60,12 @@
                         <button id="btn-decrypt" class="btn-main secondary" onclick="handleDecrypt()">⬢ DÉCHIFFRER</button>
                     </div>
 
-                    <div class="card-label">◆ RÉSULTAT</div>
-                    <div class="result-wrapper">
-                        <textarea id="result" readonly placeholder="Résultat..."></textarea>
-                        <button class="copy-btn" onclick="copyResult()">⎘</button>
+                    <div class="card-label">
+                        <span>◆ RÉSULTAT</span>
+                        <span style="font-size: 0.8rem; cursor: pointer;" onclick="copyResult()">❐</span>
+                    </div>
+                    <div class="result-wrapper" style="position: relative;">
+                        <textarea id="result" readonly placeholder="Le résultat apparaîtra ici..."></textarea>
                     </div>
                 </div>
             </section>
@@ -75,11 +84,16 @@
                     </div>
 
                     <div class="editor-split">
-                        <textarea id="note-textarea" placeholder="Markdown ici..." oninput="autoSaveNote()"></textarea>
+                        <textarea id="note-textarea" placeholder="Tapez votre note (Markdown)..." oninput="autoSaveNote()"></textarea>
                         <div id="markdown-preview" class="preview-area"></div>
                     </div>
                 </div>
             </section>
+
+            <footer style="margin-top: 40px; font-size: 0.6rem; color: #484f58; letter-spacing: 2px; text-align: center; text-transform: uppercase;">
+                INKRYPT · TOUT LE TRAITEMENT EST LOCAL · AUCUNE DONNÉE TRANSMISE
+            </footer>
+
         </main>
     </div>
 
