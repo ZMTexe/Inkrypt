@@ -1,84 +1,109 @@
-// JS/obsidian.js - Gestion du coffre-fort de notes
+// JS/obsidian.js - Le gestionnaire de ton coffre-fort
 
 let notes = JSON.parse(localStorage.getItem('inkrypt_notes')) || [];
 let currentNoteId = null;
 
-// 1. Initialisation au chargement
+// Initialisation au chargement de la page
 document.addEventListener('DOMContentLoaded', () => {
     renderNoteList();
 });
 
-// 2. Créer une nouvelle note
+/**
+ * Crée une nouvelle note vide et l'ajoute à la liste
+ */
 window.createNewNote = function() {
     const newNote = {
         id: Date.now(),
         title: "Nouvelle Note " + (notes.length + 1),
         content: ""
     };
-    notes.unshift(newNote); // Ajoute au début de la liste
-    saveAndRender();
+    notes.unshift(newNote); // On l'ajoute en haut de la pile
+    saveToDisk();
     loadNote(newNote.id);
-    showView('notes'); // Bascule automatiquement sur l'éditeur
+    renderNoteList();
+    console.log("Système : Nouvelle note générée.");
 };
 
-// 3. Charger une note dans l'éditeur
-function loadNote(id) {
+/**
+ * Charge une note spécifique dans l'éditeur
+ */
+window.loadNote = function(id) {
     currentNoteId = id;
     const note = notes.find(n => n.id === id);
     if (note) {
         document.getElementById('note-title-input').value = note.title;
         document.getElementById('note-textarea').value = note.content;
         updatePreview();
-    }
-}
-
-// 4. Sauvegarde automatique (appelée par oninput dans le HTML)
-window.autoSaveNote = function() {
-    if (!currentNoteId) return;
-
-    const title = document.getElementById('note-title-input').value;
-    const content = document.getElementById('note-textarea').value;
-
-    const noteIndex = notes.findIndex(n => n.id === currentNoteId);
-    if (noteIndex !== -1) {
-        notes[noteIndex].title = title;
-        notes[noteIndex].content = content;
-        
-        localStorage.setItem('inkrypt_notes', JSON.stringify(notes));
-        renderNoteList();
-        updatePreview();
+        renderNoteList(); // Pour mettre à jour l'état "actif" visuellement
     }
 };
 
-// 5. Mise à jour de la prévisualisation Markdown
+/**
+ * Sauvegarde automatique lors de la frappe
+ */
+window.autoSaveNote = function() {
+    if (!currentNoteId) return;
+
+    const titleInput = document.getElementById('note-title-input').value;
+    const contentInput = document.getElementById('note-textarea').value;
+
+    const index = notes.findIndex(n => n.id === currentNoteId);
+    if (index !== -1) {
+        notes[index].title = titleInput;
+        notes[index].content = contentInput;
+        saveToDisk();
+        updatePreview();
+        // On ne refresh pas toute la liste à chaque lettre pour éviter les lags
+        // On met juste à jour le titre dans la sidebar
+        const sidebarNote = document.querySelector(`.note-item[data-id="${currentNoteId}"] span`);
+        if (sidebarNote) sidebarNote.innerText = titleInput || "Sans titre";
+    }
+};
+
+/**
+ * Met à jour le rendu Markdown à droite
+ */
 function updatePreview() {
     const content = document.getElementById('note-textarea').value;
-    // On utilise la bibliothèque "marked" chargée dans le HTML
-    document.getElementById('markdown-preview').innerHTML = marked.parse(content);
+    const previewArea = document.getElementById('markdown-preview');
+    // Utilise la librairie "marked" injectée dans le HTML
+    if (window.marked) {
+        previewArea.innerHTML = marked.parse(content);
+    } else {
+        previewArea.innerText = content;
+    }
 }
 
-// 6. Afficher la liste des notes dans la sidebar
+/**
+ * Affiche la liste des notes dans la sidebar
+ */
 function renderNoteList() {
     const listElement = document.getElementById('note-list');
-    listElement.innerHTML = "";
+    if (!listElement) return;
 
+    listElement.innerHTML = "";
     notes.forEach(note => {
         const item = document.createElement('div');
         item.className = 'note-item' + (note.id === currentNoteId ? ' active' : '');
+        item.setAttribute('data-id', note.id);
         item.innerHTML = `<span>${note.title || "Sans titre"}</span>`;
         item.onclick = () => loadNote(note.id);
         listElement.appendChild(item);
     });
 }
 
-function saveAndRender() {
+function saveToDisk() {
     localStorage.setItem('inkrypt_notes', JSON.stringify(notes));
-    renderNoteList();
 }
 
-// 7. Recherche (Filtrage)
+/**
+ * Barre de recherche
+ */
 window.filterNotes = function() {
     const term = document.getElementById('note-search').value.toLowerCase();
-    const filtered = notes.filter(n => n.title.toLowerCase().includes(term));
-    // Optionnel : tu peux adapter renderNoteList pour accepter un tableau filtré
+    const items = document.querySelectorAll('.note-item');
+    items.forEach(item => {
+        const title = item.innerText.toLowerCase();
+        item.style.display = title.includes(term) ? 'block' : 'none';
+    });
 };
