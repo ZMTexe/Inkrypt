@@ -8,11 +8,12 @@ window.createNewNote = function() {
     notes.unshift(newNote);
     saveToDisk();
     loadNote(newNote.id);
+    showView('notes');
 };
 
 window.deleteCurrentNote = function() {
     if (!currentNoteId) return;
-    if (confirm("Supprimer cette note ?")) {
+    if (confirm("Supprimer cette note définitivement ?")) {
         notes = notes.filter(n => n.id !== currentNoteId);
         currentNoteId = null;
         document.getElementById('note-title-input').value = "";
@@ -42,7 +43,9 @@ window.autoSaveNote = function() {
         notes[index].content = document.getElementById('note-textarea').value;
         saveToDisk();
         updatePreview();
-        renderNoteList();
+        // Mise à jour rapide du titre dans la sidebar sans tout recharger
+        const item = document.querySelector(`.note-item[data-id="${currentNoteId}"] span`);
+        if (item) item.innerText = notes[index].title || "Sans titre";
     }
 };
 
@@ -63,6 +66,7 @@ window.insertFormat = function(type) {
         case 'code': formatted = `\`${selected}\``; break;
     }
     textarea.value = text.substring(0, start) + formatted + text.substring(end);
+    textarea.focus();
     autoSaveNote();
 };
 
@@ -77,6 +81,7 @@ function renderNoteList() {
     notes.forEach(note => {
         const item = document.createElement('div');
         item.className = 'note-item' + (note.id === currentNoteId ? ' active' : '');
+        item.setAttribute('data-id', note.id);
         item.innerHTML = `<span>${note.title || "Sans titre"}</span>`;
         item.onclick = () => loadNote(note.id);
         list.appendChild(item);
@@ -84,3 +89,10 @@ function renderNoteList() {
 }
 
 function saveToDisk() { localStorage.setItem('inkrypt_notes', JSON.stringify(notes)); }
+
+window.filterNotes = function() {
+    const term = document.getElementById('note-search').value.toLowerCase();
+    document.querySelectorAll('.note-item').forEach(item => {
+        item.style.display = item.innerText.toLowerCase().includes(term) ? 'block' : 'none';
+    });
+};

@@ -41,17 +41,20 @@
                 <div class="crypto-card">
                     <div class="card-label">▶ MESSAGE SOURCE</div>
                     <textarea id="message" placeholder="Entrez votre texte ici..."></textarea>
+                    
                     <div class="card-label">▶ CLÉ SECRÈTE <span class="min-char">MIN. 8 CARACTÈRES</span></div>
-                    <div class="input-wrapper" style="position: relative;">
+                    <div class="input-wrapper">
                         <input type="password" id="secret" placeholder="Clé de chiffrement...">
-                        <button class="view-toggle" onclick="togglePass()" style="position: absolute; right: 10px; top: 12px; background: none; border: none; color: var(--neon); cursor: pointer;">👁</button>
+                        <button class="view-toggle" onclick="togglePass()">👁</button>
                     </div>
+
                     <div class="button-group">
                         <button id="btn-encrypt" class="btn-main neon-glow" onclick="handleEncrypt()">⬢ CHIFFRER</button>
                         <button id="btn-decrypt" class="btn-main secondary" onclick="handleDecrypt()">⬢ DÉCHIFFRER</button>
                     </div>
+
                     <div class="card-label">◆ RÉSULTAT</div>
-                    <div class="result-wrapper" style="position: relative;">
+                    <div class="result-wrapper">
                         <textarea id="result" readonly placeholder="Résultat..."></textarea>
                         <button class="copy-btn" onclick="copyResult()">⎘</button>
                     </div>
@@ -61,6 +64,7 @@
             <section id="view-notes" class="view-content">
                 <div class="obsidian-editor">
                     <input type="text" id="note-title-input" class="note-title" placeholder="Titre de la note..." oninput="autoSaveNote()">
+                    
                     <div class="toolbar">
                         <button onclick="insertFormat('bold')">B</button>
                         <button onclick="insertFormat('italic')">I</button>
@@ -69,6 +73,7 @@
                         <button onclick="insertFormat('list')">•</button>
                         <button onclick="insertFormat('code')">{}</button>
                     </div>
+
                     <div class="editor-split">
                         <textarea id="note-textarea" placeholder="Markdown ici..." oninput="autoSaveNote()"></textarea>
                         <div id="markdown-preview" class="preview-area"></div>
