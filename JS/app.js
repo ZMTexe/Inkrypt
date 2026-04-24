@@ -1,55 +1,43 @@
-// js/app.js - Le cerveau qui gère l'affichage et les menus
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("INKRYPT OS initialized.");
+    showView('decrypt'); // Vue par défaut
+});
 
-/**
- * Change la vue entre le Terminal et l'Éditeur de notes
- * @param {string} viewId - L'id de la vue ('decrypt' ou 'notes')
- */
 function showView(viewId) {
-    // 1. On cache toutes les sections de contenu
-    document.querySelectorAll('.view-content').forEach(view => {
-        view.classList.remove('active');
-    });
+    // 1. Cacher les vues
+    const views = document.querySelectorAll('.view-content');
+    views.forEach(v => v.classList.remove('active'));
 
-    // 2. On retire l'état "actif" de tous les boutons du menu
-    document.querySelectorAll('.tab-link').forEach(tab => {
-        tab.classList.remove('active');
-    });
+    // 2. Éteindre les onglets
+    const tabs = document.querySelectorAll('.tab-link');
+    tabs.forEach(t => t.classList.remove('active'));
 
-    // 3. On affiche la section demandée
+    // 3. Activer la cible
     const targetView = document.getElementById('view-' + viewId);
-    if (targetView) {
-        targetView.classList.add('active');
-    }
-
-    // 4. On allume le bouton cliqué dans le menu
     const targetTab = document.getElementById('tab-' + viewId);
-    if (targetTab) {
+
+    if (targetView && targetTab) {
+        targetView.classList.add('active');
         targetTab.classList.add('active');
+        console.log("Switching to: " + viewId);
     }
 }
 
-/**
- * Affiche ou cache le mot de passe dans l'input
- */
 function togglePass() {
-    const input = document.getElementById('secret');
-    if (input.type === 'password') {
-        input.type = 'text';
-    } else {
-        input.type = 'password';
+    const secret = document.getElementById('secret');
+    secret.type = (secret.type === 'password') ? 'text' : 'password';
+}
+
+function copyResult() {
+    const result = document.getElementById('result');
+    if (result.value) {
+        navigator.clipboard.writeText(result.value);
+        alert("Copié !");
     }
 }
 
-/**
- * Copie le contenu du résultat dans le presse-papier
- */
-function copyResult() {
-    const copyText = document.getElementById('result');
-    if (copyText.value === "") return; // Rien à copier
-    
-    copyText.select();
-    copyText.setSelectionRange(0, 99999); // Pour mobile
-    navigator.clipboard.writeText(copyText.value);
-    
-    alert("Données copiées !");
-}
+// Sécurité pour éviter les erreurs si les autres fichiers sont vides
+if (typeof createNewNote !== 'function') window.createNewNote = () => {};
+if (typeof autoSaveNote !== 'function') window.autoSaveNote = () => {};
+if (typeof handleEncrypt !== 'function') window.handleEncrypt = () => {};
+if (typeof handleDecrypt !== 'function') window.handleDecrypt = () => {};

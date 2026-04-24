@@ -6,107 +6,50 @@
     --bg: #05070a;
     --panel: rgba(13, 17, 23, 0.7);
     --border: rgba(30, 45, 64, 0.6);
-    --radius: 12px; /* La valeur de l'arrondi */
+    --radius: 12px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-    background: var(--bg);
-    color: #c8d8e8;
-    font-family: 'Fira Code', monospace;
-    height: 100vh;
-    display: flex;
-    overflow: hidden;
-}
-
+body { background: var(--bg); color: #c8d8e8; font-family: 'Fira Code', monospace; height: 100vh; display: flex; overflow: hidden; }
 #matrix-bg { position: fixed; top: 0; left: 0; z-index: -1; }
 
 .app-layout { display: flex; width: 100vw; height: 100vh; }
 
-/* SIDEBAR */
 .sidebar-obsidian {
-    width: 280px;
-    background: rgba(8, 10, 14, 0.95);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
+    width: 280px; background: rgba(8, 10, 14, 0.95); border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; padding: 20px;
 }
 
-.vault-title { font-family: 'Orbitron'; color: var(--neon); font-size: 1.1rem; }
+.terminal-container { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 40px; overflow-y: auto; }
 
-/* LOGO STYLE */
+/* LOGO */
 .brand { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
-.logo-main {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 2.8rem;
-    font-weight: 900;
-    letter-spacing: 6px;
-    color: #e6edf3;
-}
+.logo-main { font-family: 'Orbitron', sans-serif; font-size: 2.8rem; font-weight: 900; letter-spacing: 6px; color: #e6edf3; }
 .neon-text { color: var(--neon); text-shadow: 0 0 15px var(--neon); }
 .bracket { color: #484f58; opacity: 0.6; }
 .version { font-size: 0.55rem; color: #484f58; letter-spacing: 2px; margin-top: 8px; text-align: center; }
 
-/* TERMINAL CORE */
-.terminal-container { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 40px; overflow-y: auto; }
-
-/* ONGLETS DU HAUT ARRONDIS */
-.nav-tabs { margin-top: 20px; display: flex; gap: 10px; }
+/* NAVIGATION */
+.nav-tabs { margin: 20px 0; display: flex; gap: 10px; }
 .tab-link {
-    background: #000; 
-    border: 1px solid var(--border); 
-    color: #fff;
-    padding: 8px 20px; 
-    cursor: pointer; 
-    font-family: 'Orbitron'; 
-    font-size: 0.7rem;
-    border-radius: 20px; /* Bords très arrondis pour les onglets */
-    transition: 0.3s;
+    background: #000; border: 1px solid var(--border); color: #fff;
+    padding: 8px 20px; cursor: pointer; font-family: 'Orbitron'; font-size: 0.7rem; border-radius: 20px;
 }
 .tab-link.active { border-color: var(--neon); color: var(--neon); box-shadow: 0 0 10px var(--neon-dim); }
 
-/* LA CARTE PRINCIPALE */
-.crypto-card {
-    width: 100%; max-width: 780px; background: var(--panel);
-    border: 1px solid var(--border); padding: 35px; 
-    border-radius: var(--radius); /* CARTE ARRONDIE */
-    backdrop-filter: blur(8px);
-}
-
-.card-label { color: #6e7681; font-size: 0.7rem; margin-bottom: 12px; font-weight: bold; }
-
-/* INPUTS ET TEXTAREAS ARRONDIS */
-textarea, input[type="password"], input[type="text"], .note-title {
-    width: 100%; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border);
-    color: #fff; padding: 15px; margin-bottom: 20px; font-family: inherit; resize: none;
-    border-radius: 8px; /* ARRONDI DES INPUTS */
-}
-
-/* BOUTONS CHIFFRER / DÉCHIFFRER ARRONDIS */
-.button-group { display: flex; gap: 15px; margin-bottom: 20px; }
-.btn-main {
-    flex: 1; padding: 18px; font-family: 'Orbitron'; font-weight: 900;
-    cursor: pointer; border: 1px solid var(--neon); transition: 0.3s;
-    border-radius: var(--radius); /* BOUTONS ARRONDIS */
-}
-.neon-glow { background: var(--neon); color: #000; }
-.neon-glow:hover { box-shadow: 0 0 20px var(--neon); transform: translateY(-2px); }
-.secondary { background: transparent; color: var(--neon); }
-.secondary:hover { background: var(--neon-dim); }
-
-/* VIEWS */
+/* CONTENU DES VUES - CRITIQUE POUR LA NAVIGATION */
 .view-content { display: none; width: 100%; }
-.view-content.active { display: flex; justify-content: center; }
+.view-content.active { display: flex; flex-direction: column; align-items: center; }
 
-/* OBSIDIAN EDITOR */
+/* CARTE & INPUTS */
+.crypto-card { width: 100%; max-width: 780px; background: var(--panel); border: 1px solid var(--border); padding: 35px; border-radius: var(--radius); backdrop-filter: blur(8px); }
+textarea, input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: #fff; padding: 15px; margin-bottom: 15px; border-radius: 8px; font-family: inherit; }
+
+.btn-main { flex: 1; padding: 18px; font-family: 'Orbitron'; font-weight: 900; cursor: pointer; border: 1px solid var(--neon); border-radius: var(--radius); transition: 0.3s; }
+.neon-glow { background: var(--neon); color: #000; }
+.secondary { background: transparent; color: var(--neon); }
+
+/* EDITOR SPLIT */
 .obsidian-editor { width: 100%; max-width: 1000px; }
 .editor-split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; height: 60vh; }
-.preview-area { 
-    background: rgba(0,0,0,0.2); 
-    border: 1px solid var(--border); 
-    padding: 20px; 
-    overflow-y: auto; 
-    border-radius: 8px; 
-}
+.preview-area { background: rgba(0,0,0,0.2); border: 1px solid var(--border); padding: 20px; border-radius: 8px; overflow-y: auto; text-align: left; }
