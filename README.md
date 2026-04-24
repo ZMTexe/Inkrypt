@@ -1,4 +1,4 @@
-# 🔐 INKRYPT — Suite de Sécurité Cyberpunk
+# 🔐 INKRYPT — Vault
 
 ![Version](https://img.shields.io/badge/version-1.0.0-00f5c4?style=for-the-badge)
 ![License](https://img.shields.io/badge/license-MIT-00a8ff?style=for-the-badge)
