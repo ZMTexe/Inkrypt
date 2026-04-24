@@ -1,7 +1,3 @@
-/* ============================================================
-   INKRYPT STATION - FULL STYLESHEET
-   ============================================================ */
-
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Orbitron:wght@600;900&display=swap');
 
 :root {
@@ -13,293 +9,45 @@
     --radius: 12px;
 }
 
-/* RESET & BASE */
-* { 
-    box-sizing: border-box; 
-    margin: 0; 
-    padding: 0; 
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: #c8d8e8; font-family: 'Fira Code', monospace; height: 100vh; display: flex; overflow: hidden; }
+#matrix-bg { position: fixed; top: 0; left: 0; z-index: -1; }
 
-body { 
-    background: var(--bg); 
-    color: #c8d8e8; 
-    font-family: 'Fira Code', monospace; 
-    height: 100vh; 
-    display: flex; 
-    overflow: hidden; 
-}
+.app-layout { display: flex; width: 100vw; height: 100vh; }
+.sidebar-obsidian { width: 280px; background: rgba(8, 10, 14, 0.95); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px; }
+.sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.vault-title { font-family: 'Orbitron'; color: var(--neon); }
 
-#matrix-bg { 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    z-index: -1; 
-}
+.icon-btn { background: var(--neon); border: none; width: 28px; height: 28px; border-radius: 4px; cursor: pointer; color: #000; font-weight: bold; }
+.icon-btn.delete { background: #ff4444; margin-left: 5px; }
 
-.app-layout { 
-    display: flex; 
-    width: 100vw; 
-    height: 100vh; 
-}
+.note-item { padding: 12px; margin-bottom: 5px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; border: 1px solid transparent; transition: 0.2s; }
+.note-item:hover { background: var(--neon-dim); color: var(--neon); }
+.note-item.active { border-color: var(--neon); background: rgba(0, 245, 196, 0.1); color: var(--neon); }
 
-/* SIDEBAR (OBSIDIAN) */
-.sidebar-obsidian {
-    width: 280px; 
-    background: rgba(8, 10, 14, 0.95); 
-    border-right: 1px solid var(--border);
-    display: flex; 
-    flex-direction: column; 
-    padding: 20px;
-    z-index: 10;
-}
+.terminal-container { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 40px; overflow-y: auto; }
+.logo-main { font-family: 'Orbitron', sans-serif; font-size: 2.8rem; font-weight: 900; letter-spacing: 6px; }
+.neon-text { color: var(--neon); text-shadow: 0 0 15px var(--neon); }
+.bracket { color: #484f58; opacity: 0.6; }
 
-.sidebar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
+.nav-tabs { margin: 20px 0; display: flex; gap: 10px; }
+.tab-link { background: #000; border: 1px solid var(--border); color: #fff; padding: 8px 20px; cursor: pointer; font-family: 'Orbitron'; font-size: 0.7rem; border-radius: 20px; }
+.tab-link.active { border-color: var(--neon); color: var(--neon); box-shadow: 0 0 10px var(--neon-dim); }
 
-.vault-title { 
-    font-family: 'Orbitron'; 
-    color: var(--neon); 
-    font-size: 1.1rem; 
-}
+.view-content { display: none; width: 100%; }
+.view-content.active { display: flex; flex-direction: column; align-items: center; }
 
-.icon-btn {
-    background: var(--neon);
-    border: none;
-    width: 28px;
-    height: 28px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    color: #000;
-    transition: 0.3s;
-}
+.crypto-card { width: 100%; max-width: 780px; background: var(--panel); border: 1px solid var(--border); padding: 35px; border-radius: var(--radius); backdrop-filter: blur(8px); }
+textarea, input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: #fff; padding: 15px; margin-bottom: 15px; border-radius: 8px; font-family: inherit; resize: none; }
 
-.icon-btn:hover {
-    box-shadow: 0 0 10px var(--neon);
-    transform: scale(1.1);
-}
+.toolbar { display: flex; gap: 5px; background: rgba(0,0,0,0.3); padding: 10px; border: 1px solid var(--border); border-bottom: none; border-radius: 8px 8px 0 0; width: 100%; }
+.toolbar button { background: transparent; border: 1px solid var(--border); color: var(--neon); padding: 5px 10px; cursor: pointer; border-radius: 4px; font-size: 0.7rem; }
+.toolbar button:hover { background: var(--neon); color: #000; }
 
-/* LISTE DES NOTES */
-.file-tree {
-    flex: 1;
-    overflow-y: auto;
-}
+.editor-split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; height: 60vh; width: 100%; }
+.preview-area { background: rgba(0,0,0,0.2); border: 1px solid var(--border); padding: 20px; border-radius: 8px; overflow-y: auto; text-align: left; }
 
-.note-item {
-    padding: 12px;
-    margin-bottom: 6px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: 0.2s;
-    border: 1px solid transparent;
-    color: #8b949e;
-}
-
-.note-item:hover {
-    background: var(--neon-dim);
-    color: var(--neon);
-}
-
-.note-item.active {
-    border-color: var(--neon);
-    background: rgba(0, 245, 196, 0.1);
-    color: var(--neon);
-}
-
-/* CONTENEUR PRINCIPAL */
-.terminal-container { 
-    flex: 1; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    padding: 40px; 
-    overflow-y: auto; 
-}
-
-/* LOGO & HEADER */
-.brand { 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    margin-bottom: 20px; 
-}
-
-.logo-main { 
-    font-family: 'Orbitron', sans-serif; 
-    font-size: 2.8rem; 
-    font-weight: 900; 
-    letter-spacing: 6px; 
-    color: #e6edf3; 
-}
-
-.neon-text { 
-    color: var(--neon); 
-    text-shadow: 0 0 15px var(--neon); 
-}
-
-.bracket { 
-    color: #484f58; 
-    opacity: 0.6; 
-}
-
-.version { 
-    font-size: 0.55rem; 
-    color: #484f58; 
-    letter-spacing: 2px; 
-    margin-top: 8px; 
-    text-align: center; 
-}
-
-/* NAVIGATION ONGLETS */
-.nav-tabs { 
-    margin: 20px 0; 
-    display: flex; 
-    gap: 10px; 
-}
-
-.tab-link {
-    background: #000; 
-    border: 1px solid var(--border); 
-    color: #fff;
-    padding: 8px 20px; 
-    cursor: pointer; 
-    font-family: 'Orbitron'; 
-    font-size: 0.7rem; 
-    border-radius: 20px;
-    transition: 0.3s;
-}
-
-.tab-link.active { 
-    border-color: var(--neon); 
-    color: var(--neon); 
-    box-shadow: 0 0 10px var(--neon-dim); 
-}
-
-/* GESTION DES VUES (Très important) */
-.view-content { 
-    display: none; 
-    width: 100%; 
-}
-
-.view-content.active { 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-}
-
-/* CARTES ET INPUTS */
-.crypto-card { 
-    width: 100%; 
-    max-width: 780px; 
-    background: var(--panel); 
-    border: 1px solid var(--border); 
-    padding: 35px; 
-    border-radius: var(--radius); 
-    backdrop-filter: blur(8px); 
-}
-
-.card-label { 
-    color: #6e7681; 
-    font-size: 0.7rem; 
-    margin-bottom: 12px; 
-    font-weight: bold; 
-    letter-spacing: 1px;
-}
-
-textarea, input { 
-    width: 100%; 
-    background: rgba(0,0,0,0.4); 
-    border: 1px solid var(--border); 
-    color: #fff; 
-    padding: 15px; 
-    margin-bottom: 15px; 
-    border-radius: 8px; 
-    font-family: inherit; 
-    resize: none;
-}
-
-textarea:focus, input:focus {
-    outline: none;
-    border-color: var(--neon);
-}
-
-/* BOUTONS NÉONS */
-.button-group { 
-    display: flex; 
-    gap: 15px; 
-    margin-bottom: 20px; 
-}
-
-.btn-main { 
-    flex: 1; 
-    padding: 18px; 
-    font-family: 'Orbitron'; 
-    font-weight: 900; 
-    cursor: pointer; 
-    border: 1px solid var(--neon); 
-    border-radius: var(--radius); 
-    transition: 0.3s; 
-}
-
-.neon-glow { 
-    background: var(--neon); 
-    color: #000; 
-}
-
-.neon-glow:hover {
-    box-shadow: 0 0 20px var(--neon);
-    transform: translateY(-2px);
-}
-
-.secondary { 
-    background: transparent; 
-    color: var(--neon); 
-}
-
-.secondary:hover {
-    background: var(--neon-dim);
-}
-
-/* ÉDITEUR OBSIDIAN STYLE */
-.obsidian-editor { 
-    width: 100%; 
-    max-width: 1000px; 
-}
-
-.editor-split { 
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 20px; 
-    height: 65vh; 
-}
-
-.preview-area { 
-    background: rgba(0,0,0,0.2); 
-    border: 1px solid var(--border); 
-    padding: 20px; 
-    border-radius: 8px; 
-    overflow-y: auto; 
-    text-align: left; 
-    color: #e6edf3;
-    line-height: 1.6;
-}
-
-/* Scrollbar Style pour le look Hacker */
-::-webkit-scrollbar {
-    width: 6px;
-}
-::-webkit-scrollbar-track {
-    background: var(--bg);
-}
-::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: var(--neon);
-}
+.btn-main { flex: 1; padding: 18px; font-family: 'Orbitron'; font-weight: 900; cursor: pointer; border: 1px solid var(--neon); border-radius: var(--radius); transition: 0.3s; }
+.neon-glow { background: var(--neon); color: #000; }
+.secondary { background: transparent; color: var(--neon); }
+.copy-btn { position: absolute; right: 10px; bottom: 10px; background: transparent; border: 1px solid var(--border); color: var(--neon); cursor: pointer; padding: 5px; border-radius: 4px; }

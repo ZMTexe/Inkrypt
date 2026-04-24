@@ -1,43 +1,21 @@
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("INKRYPT OS initialized.");
-    showView('decrypt'); // Vue par défaut
-});
+document.addEventListener('DOMContentLoaded', () => { showView('decrypt'); });
 
 function showView(viewId) {
-    // 1. Cacher les vues
-    const views = document.querySelectorAll('.view-content');
-    views.forEach(v => v.classList.remove('active'));
-
-    // 2. Éteindre les onglets
-    const tabs = document.querySelectorAll('.tab-link');
-    tabs.forEach(t => t.classList.remove('active'));
-
-    // 3. Activer la cible
-    const targetView = document.getElementById('view-' + viewId);
-    const targetTab = document.getElementById('tab-' + viewId);
-
-    if (targetView && targetTab) {
-        targetView.classList.add('active');
-        targetTab.classList.add('active');
-        console.log("Switching to: " + viewId);
-    }
+    document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active'));
+    
+    const target = document.getElementById('view-' + viewId);
+    if (target) target.classList.add('active');
+    document.getElementById('tab-' + viewId).classList.add('active');
 }
 
 function togglePass() {
     const secret = document.getElementById('secret');
-    secret.type = (secret.type === 'password') ? 'text' : 'password';
+    secret.type = secret.type === 'password' ? 'text' : 'password';
 }
 
 function copyResult() {
-    const result = document.getElementById('result');
-    if (result.value) {
-        navigator.clipboard.writeText(result.value);
-        alert("Copié !");
-    }
+    const res = document.getElementById('result');
+    navigator.clipboard.writeText(res.value);
+    alert("Copié !");
 }
-
-// Sécurité pour éviter les erreurs si les autres fichiers sont vides
-if (typeof createNewNote !== 'function') window.createNewNote = () => {};
-if (typeof autoSaveNote !== 'function') window.autoSaveNote = () => {};
-if (typeof handleEncrypt !== 'function') window.handleEncrypt = () => {};
-if (typeof handleDecrypt !== 'function') window.handleDecrypt = () => {};
