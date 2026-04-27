@@ -1,87 +1,75 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>INKRYPT — Chiffrement AES-GCM</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INKRYPT</title>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
 <body>
 
-  <canvas id="matrix-bg"></canvas>
-  <div class="noise"></div>
-  <div class="grid-bg"></div>
+<canvas id="matrix-bg"></canvas>
+<div class="noise"></div>
+<div class="grid-bg"></div>
 
-  <header>
-    <div class="logo">
-      <span class="logo-bracket">[</span>
-      <span class="logo-text">INK<span class="accent">RYPT</span></span>
-      <span class="logo-bracket">]</span>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+  <div class="logo-mini">IK</div>
+
+  <nav class="nav">
+    <button class="nav-item active">🔐</button>
+    <button class="nav-item">🔑</button>
+    <button class="nav-item">📝</button>
+    <button class="nav-item">🧹</button>
+  </nav>
+
+</aside>
+
+<!-- APP -->
+<div class="app">
+
+<header>
+  <h1 class="logo">
+    <span>[</span> INK<span class="accent">RYPT</span> <span>]</span>
+  </h1>
+  <p class="tagline">WebCrypto · Zero dépendance · Local only</p>
+</header>
+
+<main>
+  <div class="card" id="card">
+
+    <div class="field">
+      <label>MESSAGE</label>
+      <textarea id="message"></textarea>
     </div>
-    <p class="tagline">· WebCrypto · Zero dépendance · Par Fego.exe</p>
-  </header>
 
-  <main>
-    <div class="card" id="card">
-
-      <div class="field-group">
-        <label for="message">
-          <span class="label-icon">▸</span> MESSAGE SOURCE
-        </label>
-        <textarea id="message" placeholder="Entrez votre texte ici…" rows="4" spellcheck="false"></textarea>
+    <div class="field">
+      <label>CLÉ</label>
+      <div class="input-row">
+        <input type="password" id="secret">
+        <button id="togglePwd">👁</button>
       </div>
-
-      <div class="field-group">
-        <label for="secret">
-          <span class="label-icon">▸</span> CLÉ SECRÈTE
-          <span class="key-hint">min. 8 caractères</span>
-        </label>
-        <div class="input-row">
-          <input type="password" id="secret" placeholder="Il faut une clé Robuste" autocomplete="off" />
-          <button class="btn-icon" id="togglePwd" title="Afficher/Masquer" aria-label="toggle password">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
-        </div>
-        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
-      </div>
-
-      <div class="actions">
-        <button class="btn btn-primary" id="btnEncrypt">
-          <span class="btn-glyph">⬡</span> CHIFFRER
-        </button>
-        <button class="btn btn-secondary" id="btnDecrypt">
-          <span class="btn-glyph">⬡</span> DÉCHIFFRER
-        </button>
-      </div>
-
-      <div class="field-group result-group">
-        <label for="result">
-          <span class="label-icon">◈</span> RÉSULTAT
-          <span class="status-dot" id="statusDot"></span>
-        </label>
-        <div class="result-wrap">
-          <textarea id="result" placeholder="Le résultat apparaîtra ici…" rows="4" readonly spellcheck="false"></textarea>
-          <button class="btn-copy" id="btnCopy" title="Copier le résultat">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          </button>
-        </div>
-      </div>
-
+      <div class="strength"><div id="strengthFill"></div></div>
     </div>
-  </main>
 
-  <div class="toast" id="toast">
-    <span class="toast-icon">✓</span> Copié dans le presse-papiers
+    <div class="actions">
+      <button id="btnEncrypt" class="btn primary">CHIFFRER</button>
+      <button id="btnDecrypt" class="btn secondary">DÉCHIFFRER</button>
+    </div>
+
+    <div class="field">
+      <label>RÉSULTAT</label>
+      <textarea id="result" readonly></textarea>
+    </div>
+
   </div>
+</main>
 
-  <footer>
-    <span>Inkrypt · Tout le traitement est local · Aucune donnée transmise</span>
-  </footer>
+</div>
 
-  <script src="script.js"></script>
-  <!-- built with ♥ -->
+<script src="script.js"></script>
 </body>
 </html>
