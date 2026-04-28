@@ -1,8 +1,4 @@
-/* ═══════════════════════════════════════════
-   INKRYPT — Dark Cyberpunk Theme
-   ═══════════════════════════════════════════ */
-
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap');
 
 :root {
   --bg:        #080b10;
@@ -426,9 +422,6 @@ textarea::placeholder, input::placeholder { color: var(--text-dim); }
   margin-left: auto;
   transition: background .3s, box-shadow .3s;
 }
-.status-dot.ok     { background: var(--accent);  box-shadow: 0 0 6px var(--accent); }
-.status-dot.error  { background: var(--danger);  box-shadow: 0 0 6px var(--danger); }
-.status-dot.active { background: var(--accent2); box-shadow: 0 0 8px var(--accent2); }
 
 .result-wrap { position: relative; }
 #result { padding-right: 3rem; resize: none; cursor: default; }
@@ -639,4 +632,69 @@ footer {
   .main-nav { width: var(--sb-w-sm); }
   .nav-label, .nav-version { opacity: 0; pointer-events: none; }
   .pages-wrapper { margin-left: var(--sb-w-sm); }
+/* ───────── INPUT ROW ───────── */
+
+.input-row{
+  display:flex;
 }
+
+.input-row button{
+  background:none;
+  border:1px solid var(--border);
+  color:var(--dim);
+  width:50px;
+}
+
+/* ───────── STRENGTH ───────── */
+
+.strength{
+  height:3px;
+  background:var(--border);
+}
+
+.strength div{
+  height:100%;
+  width:0%;
+  background:var(--accent);
+}
+
+/* ───────── BUTTONS ───────── */
+
+.actions{
+  display:flex;
+  gap:10px;
+}
+
+.btn{
+  flex:1;
+  padding:12px;
+  font-family:'Orbitron';
+  letter-spacing:.1em;
+  cursor:pointer;
+  border-radius:8px;
+  transition:.2s;
+}
+
+/* PRIMARY = glow fort */
+.primary{
+  background:linear-gradient(135deg,#00f5c4,#00cfa5);
+  color:#001;
+  box-shadow:0 0 25px rgba(0,245,196,.4);
+}
+
+.primary:hover{
+  box-shadow:0 0 40px rgba(0,245,196,.8);
+}
+
+/* SECONDARY = clean tech */
+.secondary{
+  border:1px solid var(--accent2);
+  color:var(--accent2);
+  background:rgba(0,168,255,.05);
+}
+
+.secondary:hover{
+  background:rgba(0,168,255,.1);
+  box-shadow:0 0 20px rgba(0,168,255,.4);
+}
+

@@ -1,44 +1,37 @@
-const canvas = document.getElementById('matrix-bg');
-const ctx = canvas.getContext('2d');
+'use strict';
 
-// On ajuste le canvas à la taille de l'écran
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const Matrix = (() => {
+  const canvas = document.getElementById('matrix-bg');
+  const ctx    = canvas ? canvas.getContext('2d') : null;
+  const SZ     = 14;
+  let cols = 0, drops = [];
 
-// Caractères utilisés (Hacker style)
-const characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$+-*/=%<>!&";
-const fontSize = 14;
-const columns = canvas.width / fontSize;
-
-// Tableau pour suivre la position verticale de chaque colonne
-const drops = Array.from({ length: columns }).fill(1);
-
-function draw() {
-    // Fond noir semi-transparent pour l'effet de traînée
-    ctx.fillStyle = "rgba(5, 7, 10, 0.15)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Couleur du texte (le vert néon d'Inkrypt)
-    ctx.fillStyle = "#00f5c4";
-    ctx.font = fontSize + "px 'Fira Code', monospace";
-
-    for (let i = 0; i < drops.length; i++) {
-        const text = characters.charAt(Math.floor(Math.random() * characters.length));
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-        // Si la goutte arrive en bas, on la remet en haut aléatoirement
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-            drops[i] = 0;
-        }
-        drops[i]++;
-    }
-}
-
-// Redimensionnement automatique si on change la taille de la fenêtre
-window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
+  function init() {
+    if (!canvas || !ctx) return;
+    canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
-});
+    cols  = Math.floor(canvas.width / SZ);
+    drops = Array.from({ length: cols }, () => (Math.random() * -100) | 0);
+  }
 
-// Lancement de l'animation (20 images par seconde pour le look rétro)
-setInterval(draw, 50);
+  function draw() {
+    if (!ctx || !canvas) return;
+    ctx.fillStyle = 'rgba(8,11,16,0.18)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#00f5c4';
+    ctx.font      = `${SZ}px "Share Tech Mono", monospace`;
+    for (let i = 0; i < cols; i++) {
+      ctx.fillText(Math.random() > 0.5 ? '1' : '0', i * SZ, drops[i] * SZ);
+      if (drops[i] * SZ > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+  }
+
+  function start() {
+    init();
+    setInterval(draw, 50);
+    window.addEventListener('resize', init);
+  }
+
+  return { start };
+})();

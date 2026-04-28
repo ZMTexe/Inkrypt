@@ -11,9 +11,9 @@
 </head>
 <body class="page-cryptage">
 
-  <canvas id="matrix-bg"></canvas>
-  <div class="noise"></div>
-  <div class="grid-bg"></div>
+<canvas id="matrix-bg"></canvas>
+<div class="noise"></div>
+<div class="grid-bg"></div>
 
   <!-- ══════════════════════════════════════
        SIDEBAR
@@ -197,16 +197,25 @@
           </div>
         </section>
       </div>
+      <div class="strength"><div id="strengthFill"></div></div>
+    </div>
+
+    <div class="actions">
+      <button id="btnEncrypt" class="btn primary">CHIFFRER</button>
+      <button id="btnDecrypt" class="btn secondary">DÉCHIFFRER</button>
+    </div>
 
     </div><!-- /#section-notes -->
 
   </div><!-- /.pages-wrapper -->
 
-  <div class="toast" id="toast">
-    <span class="toast-icon">✓</span> Copié dans le presse-papiers
   </div>
+</main>
 
-  <script src="script.js"></script>
-  <!-- built with ♥ -->
+    <!-- built with ♥ -->
+       <script src="js/matrix.js"></script>
+  <script src="js/crypt.js"></script>
+  <script src="js/obsidian.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
