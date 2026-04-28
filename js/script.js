@@ -25,14 +25,11 @@ let scrambleTimer = null;
 function startScramble(length = 48) {
   elResult.classList.add('scrambling');
   let ticks = 0;
-  const total = 22;
   scrambleTimer = setInterval(() => {
-    const chars = Array.from({ length: Math.min(length, 64) }, () =>
+    elResult.value = Array.from({ length: Math.min(length, 64) }, () =>
       GLYPHS[Math.floor(Math.random() * GLYPHS.length)]
     ).join('');
-    elResult.value = chars;
-    ticks++;
-    if (ticks >= total) stopScramble();
+    if (++ticks >= 22) stopScramble();
   }, 40);
 }
 
@@ -63,27 +60,19 @@ async function encrypt(plaintext, password) {
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const iv   = crypto.getRandomValues(new Uint8Array(12));
   const key  = await deriveKey(password, salt);
-  const ct   = await crypto.subtle.encrypt(
-    { name: 'AES-GCM', iv },
-    key,
-    enc.encode(plaintext)
-  );
-  // Payload compact : [salt(16)] + [iv(12)] + [ciphertext]
-  const buf = new Uint8Array(salt.length + iv.length + ct.byteLength);
-  buf.set(salt, 0);
-  buf.set(iv, 16);
-  buf.set(new Uint8Array(ct), 28);
+  const ct   = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(plaintext));
+  const buf  = new Uint8Array(16 + 12 + ct.byteLength);
+  buf.set(salt, 0); buf.set(iv, 16); buf.set(new Uint8Array(ct), 28);
   return btoa(String.fromCharCode(...buf));
 }
 
 // ── Decrypt ───────────────────────────────────────────────────────────────────
 async function decrypt(payload, password) {
-  const raw  = Uint8Array.from(atob(payload), c => c.charCodeAt(0));
-  const salt = raw.slice(0, 16);
-  const iv   = raw.slice(16, 28);
-  const ct   = raw.slice(28);
-  const key  = await deriveKey(password, salt);
-  const pt   = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
+  const raw = Uint8Array.from(atob(payload), c => c.charCodeAt(0));
+  const key = await deriveKey(password, raw.slice(0, 16));
+  const pt  = await crypto.subtle.decrypt(
+    { name: 'AES-GCM', iv: raw.slice(16, 28) }, key, raw.slice(28)
+  );
   return new TextDecoder().decode(pt);
 }
 
@@ -91,23 +80,23 @@ async function decrypt(payload, password) {
 function setStatus(type) {
   elStatus.className = 'status-dot' + (type ? ' ' + type : '');
 }
-
 function setProcessing(on) {
   elCard.classList.toggle('processing', on);
   elEncrypt.disabled = on;
   elDecrypt.disabled = on;
 }
-
 function flashError(msg) {
   elResult.value = '⚠ ' + msg;
   setStatus('error');
   elCard.classList.add('shake');
   elCard.addEventListener('animationend', () => elCard.classList.remove('shake'), { once: true });
 }
-
-function showToast() {
+function showToast(msg) {
+  if (msg) elToast.innerHTML = `<span class="toast-icon">${msg.split(' ')[0]}</span> ${msg.split(' ').slice(1).join(' ')}`;
+  else     elToast.innerHTML = `<span class="toast-icon">✓</span> Copié dans le presse-papiers`;
   elToast.classList.add('show');
-  setTimeout(() => elToast.classList.remove('show'), 2200);
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => elToast.classList.remove('show'), 2200);
 }
 
 // ── Password strength ─────────────────────────────────────────────────────────
@@ -122,12 +111,10 @@ elSecret.addEventListener('input', () => {
   const pct = Math.min(score, 100);
   elStrength.style.width = pct + '%';
   elStrength.style.background =
-    pct < 35 ? 'var(--danger)' :
-    pct < 65 ? '#f5a623' :
-               'var(--accent)';
+    pct < 35 ? 'var(--danger)' : pct < 65 ? '#f5a623' : 'var(--accent)';
 });
 
-// ── Toggle password visibility ────────────────────────────────────────────────
+// ── Toggle password ───────────────────────────────────────────────────────────
 elTogglePwd.addEventListener('click', () => {
   const show = elSecret.type === 'password';
   elSecret.type = show ? 'text' : 'password';
@@ -136,95 +123,224 @@ elTogglePwd.addEventListener('click', () => {
 
 // ── Encrypt handler ───────────────────────────────────────────────────────────
 elEncrypt.addEventListener('click', async () => {
-  const msg = elMsg.value.trim();
-  const pwd = elSecret.value;
+  const msg = elMsg.value.trim(), pwd = elSecret.value;
   if (!msg) { flashError('Message vide.'); return; }
   if (!pwd) { flashError('Clé secrète requise.'); return; }
-
-  setProcessing(true);
-  setStatus('active');
-  startScramble(64);
-
+  setProcessing(true); setStatus('active'); startScramble(64);
   try {
-    const result = await encrypt(msg, pwd);
-    stopScramble();
-    elResult.value = result;
-    setStatus('ok');
-  } catch (e) {
-    stopScramble();
-    flashError('Erreur de chiffrement : ' + e.message);
-  } finally {
-    setProcessing(false);
-  }
+    elResult.value = await encrypt(msg, pwd);
+    stopScramble(); setStatus('ok');
+  } catch (e) { stopScramble(); flashError('Erreur : ' + e.message); }
+  finally { setProcessing(false); }
 });
 
 // ── Decrypt handler ───────────────────────────────────────────────────────────
 elDecrypt.addEventListener('click', async () => {
-  const payload = elMsg.value.trim();
-  const pwd     = elSecret.value;
+  const payload = elMsg.value.trim(), pwd = elSecret.value;
   if (!payload) { flashError('Collez le message chiffré dans le champ source.'); return; }
   if (!pwd)     { flashError('Clé secrète requise.'); return; }
-
-  setProcessing(true);
-  setStatus('active');
-  startScramble(48);
-
+  setProcessing(true); setStatus('active'); startScramble(48);
   try {
-    const result = await decrypt(payload, pwd);
-    stopScramble();
-    elResult.value = result;
-    setStatus('ok');
-  } catch {
-    stopScramble();
-    flashError('Déchiffrement échoué — clé incorrecte ou données corrompues.');
-  } finally {
-    setProcessing(false);
-  }
+    elResult.value = await decrypt(payload, pwd);
+    stopScramble(); setStatus('ok');
+  } catch { stopScramble(); flashError('Déchiffrement échoué — clé incorrecte ou données corrompues.'); }
+  finally { setProcessing(false); }
 });
 
 // ── Copy handler ──────────────────────────────────────────────────────────────
 elCopy.addEventListener('click', async () => {
   const txt = elResult.value;
   if (!txt || txt.startsWith('⚠')) return;
-  try {
-    await navigator.clipboard.writeText(txt);
-    showToast();
-  } catch {
-    elResult.select();
-    document.execCommand('copy');
-    showToast();
-  }
+  try { await navigator.clipboard.writeText(txt); }
+  catch { elResult.select(); document.execCommand('copy'); }
+  showToast();
 });
 
-/* ── Matrix Digital Rain ─────────────────────────────────────────────────── */
+// ══════════════════════════════════════════════
+// SIDEBAR — collapse
+// ══════════════════════════════════════════════
+const nav         = document.getElementById('mainNav');
+const btnCollapse = document.getElementById('navCollapse');
+const collapsed   = localStorage.getItem('inkrypt_sb') === '1';
+
+if (collapsed) { nav.classList.add('collapsed'); document.body.classList.add('sb-collapsed'); }
+
+btnCollapse.addEventListener('click', () => {
+  const c = nav.classList.toggle('collapsed');
+  document.body.classList.toggle('sb-collapsed', c);
+  localStorage.setItem('inkrypt_sb', c ? '1' : '0');
+});
+
+// ══════════════════════════════════════════════
+// ROUTER SPA
+// ══════════════════════════════════════════════
+function basculer(page) {
+  const cryptage = document.getElementById('section-cryptage');
+  const notes    = document.getElementById('section-notes');
+  cryptage.style.display = page === 'cryptage' ? 'flex'  : 'none';
+  notes.style.display    = page === 'notes'    ? 'flex'  : 'none';
+  document.querySelectorAll('.nav-btn[data-page]').forEach(b =>
+    b.classList.toggle('active', b.dataset.page === page)
+  );
+  localStorage.setItem('inkrypt_page', page);
+  if (page === 'notes') renderTree();
+}
+
+// Restaurer onglet
+const lastPage = localStorage.getItem('inkrypt_page') || 'cryptage';
+basculer(lastPage);
+
+// ══════════════════════════════════════════════
+// NOTES — stockage localStorage
+// ══════════════════════════════════════════════
+function loadData()     { return JSON.parse(localStorage.getItem('inkrypt_notes') || '{"folders":[],"notes":[]}'); }
+function saveData(d)    { localStorage.setItem('inkrypt_notes', JSON.stringify(d)); }
+function uid()          { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function esc(s)         { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmtDate(ts)    {
+  if (!ts) return '';
+  const d = new Date(ts);
+  return d.toLocaleDateString('fr-CH',{day:'2-digit',month:'2-digit'})
+       + ' ' + d.toLocaleTimeString('fr-CH',{hour:'2-digit',minute:'2-digit'});
+}
+
+let activeNoteId = null;
+
+// ── Arborescence ──────────────────────────────────────────────────────────────
+function renderTree() {
+  const data = loadData();
+  const tree = document.getElementById('fileTree');
+  tree.innerHTML = '';
+
+  data.notes.filter(n => !n.folderId).forEach(n => tree.appendChild(makeNoteEl(n)));
+
+  data.folders.forEach(f => {
+    const li = document.createElement('li');
+    li.className = 'tree-folder';
+    li.innerHTML = `<span>📁</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(f.name)}</span>
+      <button class="tree-del" data-fid="${f.id}">✕</button>`;
+    li.querySelector('.tree-del').addEventListener('click', e => {
+      e.stopPropagation();
+      if (!confirm('Supprimer ce dossier et ses notes ?')) return;
+      const d = loadData();
+      d.folders = d.folders.filter(x => x.id !== f.id);
+      d.notes   = d.notes.filter(x => x.folderId !== f.id);
+      saveData(d); renderTree();
+    });
+    tree.appendChild(li);
+    data.notes.filter(n => n.folderId === f.id).forEach(n => tree.appendChild(makeNoteEl(n)));
+  });
+}
+
+function makeNoteEl(note) {
+  const li = document.createElement('li');
+  li.className = 'tree-note' + (note.id === activeNoteId ? ' active' : '');
+  li.innerHTML = `<span>📄</span>
+    <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(note.title || '(sans titre)')}</span>
+    <button class="tree-del" data-nid="${note.id}">✕</button>`;
+  li.addEventListener('click', () => openNote(note.id));
+  li.querySelector('.tree-del').addEventListener('click', e => {
+    e.stopPropagation();
+    if (!confirm('Supprimer cette note ?')) return;
+    const d = loadData();
+    d.notes = d.notes.filter(x => x.id !== note.id);
+    saveData(d);
+    if (activeNoteId === note.id) { activeNoteId = null; clearEditor(); }
+    renderTree();
+  });
+  return li;
+}
+
+function openNote(id) {
+  const note = loadData().notes.find(n => n.id === id);
+  if (!note) return;
+  activeNoteId = id;
+  document.getElementById('noteTitle').value   = note.title   || '';
+  document.getElementById('noteContent').value = note.content || '';
+  document.getElementById('noteStatus').textContent = fmtDate(note.updatedAt);
+  renderTree();
+}
+
+function clearEditor() {
+  document.getElementById('noteTitle').value   = '';
+  document.getElementById('noteContent').value = '';
+  document.getElementById('noteStatus').textContent = '';
+}
+
+// ── Nouvelle note ─────────────────────────────────────────────────────────────
+document.getElementById('btnNewNote').addEventListener('click', () => {
+  const d    = loadData();
+  const note = { id: uid(), folderId: null, title: 'Nouvelle note', content: '', createdAt: Date.now(), updatedAt: Date.now() };
+  d.notes.push(note); saveData(d);
+  openNote(note.id);
+  setTimeout(() => {
+    const t = document.getElementById('noteTitle');
+    t.focus(); t.select();
+  }, 50);
+});
+
+// ── Nouveau dossier ───────────────────────────────────────────────────────────
+document.getElementById('btnNewFolder').addEventListener('click', () => {
+  const name = prompt('Nom du dossier :');
+  if (!name?.trim()) return;
+  const d = loadData();
+  d.folders.push({ id: uid(), name: name.trim() });
+  saveData(d); renderTree();
+});
+
+// ── Sauvegarder ───────────────────────────────────────────────────────────────
+document.getElementById('btnSaveNote').addEventListener('click', saveCurrentNote);
+document.getElementById('noteContent').addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveCurrentNote(); }
+});
+
+function saveCurrentNote() {
+  if (!activeNoteId) return;
+  const d    = loadData();
+  const note = d.notes.find(n => n.id === activeNoteId);
+  if (!note) return;
+  note.title     = document.getElementById('noteTitle').value.trim() || '(sans titre)';
+  note.content   = document.getElementById('noteContent').value;
+  note.updatedAt = Date.now();
+  saveData(d);
+  document.getElementById('noteStatus').textContent = '✓ Sauvegardé ' + fmtDate(note.updatedAt);
+  renderTree();
+}
+
+// ── Supprimer note ────────────────────────────────────────────────────────────
+document.getElementById('btnDeleteNote').addEventListener('click', () => {
+  if (!activeNoteId || !confirm('Supprimer cette note ?')) return;
+  const d = loadData();
+  d.notes = d.notes.filter(n => n.id !== activeNoteId);
+  saveData(d); activeNoteId = null; clearEditor(); renderTree();
+});
+
+/* ══════════════════════════════════════════════
+   MATRIX DIGITAL RAIN
+══════════════════════════════════════════════ */
 (function () {
-  const canvas  = document.getElementById('matrix-bg');
-  const ctx     = canvas.getContext('2d');
-  const COLOR   = '#00f5c4';
-  const FONT_SZ = 14;
+  const canvas = document.getElementById('matrix-bg');
+  const ctx    = canvas.getContext('2d');
+  const SZ     = 14;
   let cols, drops;
 
   function init() {
     canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
-    cols  = Math.floor(canvas.width / FONT_SZ);
+    cols  = Math.floor(canvas.width / SZ);
     drops = Array.from({ length: cols }, () => Math.random() * -100 | 0);
   }
-
   function draw() {
-    ctx.fillStyle = 'rgba(8, 11, 16, 0.18)';
+    ctx.fillStyle = 'rgba(8,11,16,0.18)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = COLOR;
-    ctx.font      = FONT_SZ + 'px "Share Tech Mono", monospace';
-
+    ctx.fillStyle = '#00f5c4';
+    ctx.font      = SZ + 'px "Share Tech Mono", monospace';
     for (let i = 0; i < cols; i++) {
-      const char = Math.random() > 0.5 ? '1' : '0';
-      ctx.fillText(char, i * FONT_SZ, drops[i] * FONT_SZ);
-      if (drops[i] * FONT_SZ > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      ctx.fillText(Math.random() > .5 ? '1' : '0', i * SZ, drops[i] * SZ);
+      if (drops[i] * SZ > canvas.height && Math.random() > .975) drops[i] = 0;
       drops[i]++;
     }
   }
-
   init();
   setInterval(draw, 50);
   window.addEventListener('resize', init);
