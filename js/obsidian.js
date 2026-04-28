@@ -1,98 +1,98 @@
-let notes = JSON.parse(localStorage.getItem('inkrypt_notes')) || [];
-let currentNoteId = null;
+'use strict';
 
-document.addEventListener('DOMContentLoaded', () => { renderNoteList(); });
+const Notes = (() => {
+  const KEY = 'inkrypt_notes';
 
-window.createNewNote = function() {
-    const newNote = { id: Date.now(), title: "Note " + (notes.length + 1), content: "" };
-    notes.unshift(newNote);
-    saveToDisk();
-    loadNote(newNote.id);
-    showView('notes');
-};
+  const store = {
+    get()   { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; } },
+    save(d) { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch {} }
+  };
 
-window.deleteCurrentNote = function() {
-    if (!currentNoteId) return;
-    if (confirm("Supprimer cette note définitivement ?")) {
-        notes = notes.filter(n => n.id !== currentNoteId);
-        currentNoteId = null;
-        document.getElementById('note-title-input').value = "";
-        document.getElementById('note-textarea').value = "";
-        document.getElementById('markdown-preview').innerHTML = "";
-        saveToDisk();
-        renderNoteList();
-    }
-};
+  let notes    = store.get();
+  let activeId = null;
 
-window.loadNote = function(id) {
-    currentNoteId = id;
+  const el = (id) => document.getElementById(id);
+
+  function renderTree() {
+    const tree = el('fileTree');
+    if (!tree) return;
+    tree.innerHTML = '';
+    const folders = [...new Set(notes.map(n => n.folder || 'General'))];
+    folders.forEach(folder => {
+      const li = document.createElement('li');
+      li.className = 'tree-folder';
+      li.innerHTML = `<span class="folder-label">📁 ${folder}</span><ul></ul>`;
+      const ul = li.querySelector('ul');
+      notes.filter(n => (n.folder || 'General') === folder).forEach(note => {
+        const noteEl = document.createElement('li');
+        noteEl.className  = 'tree-note' + (note.id === activeId ? ' active' : '');
+        noteEl.textContent = note.title || 'Sans titre';
+        noteEl.addEventListener('click', () => openNote(note.id));
+        ul.appendChild(noteEl);
+      });
+      tree.appendChild(li);
+    });
+  }
+
+  function openNote(id) {
     const note = notes.find(n => n.id === id);
-    if (note) {
-        document.getElementById('note-title-input').value = note.title;
-        document.getElementById('note-textarea').value = note.content;
-        updatePreview();
-        renderNoteList();
-    }
-};
+    if (!note) return;
+    activeId = id;
+    el('noteTitle').value   = note.title   || '';
+    el('noteContent').value = note.content || '';
+    const s = el('noteStatus');
+    if (s) s.textContent = '';
+    renderTree();
+  }
 
-window.autoSaveNote = function() {
-    if (!currentNoteId) return;
-    const index = notes.findIndex(n => n.id === currentNoteId);
-    if (index !== -1) {
-        notes[index].title = document.getElementById('note-title-input').value;
-        notes[index].content = document.getElementById('note-textarea').value;
-        saveToDisk();
-        updatePreview();
-        // Mise à jour rapide du titre dans la sidebar sans tout recharger
-        const item = document.querySelector(`.note-item[data-id="${currentNoteId}"] span`);
-        if (item) item.innerText = notes[index].title || "Sans titre";
-    }
-};
+  function saveNote() {
+    if (!activeId) return;
+    const note = notes.find(n => n.id === activeId);
+    if (!note) return;
+    note.title     = el('noteTitle').value;
+    note.content   = el('noteContent').value;
+    note.updatedAt = new Date().toISOString();
+    store.save(notes);
+    const s = el('noteStatus');
+    if (s) { s.textContent = 'Sauvegarde'; setTimeout(() => s.textContent = '', 2000); }
+    renderTree();
+  }
 
-window.insertFormat = function(type) {
-    const textarea = document.getElementById('note-textarea');
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = textarea.value;
-    const selected = text.substring(start, end);
-    let formatted = "";
+  function newNote(folder = 'General') {
+    const note = {
+      id: crypto.randomUUID(),
+      title: 'Nouvelle note',
+      content: '',
+      folder,
+      createdAt: new Date().toISOString()
+    };
+    notes.push(note);
+    store.save(notes);
+    openNote(note.id);
+  }
 
-    switch(type) {
-        case 'bold': formatted = `**${selected}**`; break;
-        case 'italic': formatted = `_${selected}_`; break;
-        case 'h1': formatted = `\n# ${selected}`; break;
-        case 'h2': formatted = `\n## ${selected}`; break;
-        case 'list': formatted = `\n- ${selected}`; break;
-        case 'code': formatted = `\`${selected}\``; break;
-    }
-    textarea.value = text.substring(0, start) + formatted + text.substring(end);
-    textarea.focus();
-    autoSaveNote();
-};
+  function newFolder() {
+    const name = prompt('Nom du dossier :');
+    if (name?.trim()) newNote(name.trim());
+  }
 
-function updatePreview() {
-    const content = document.getElementById('note-textarea').value;
-    document.getElementById('markdown-preview').innerHTML = marked.parse(content);
-}
+  function deleteNote() {
+    if (!activeId || !confirm('Supprimer cette note ?')) return;
+    notes    = notes.filter(n => n.id !== activeId);
+    activeId = null;
+    el('noteTitle').value   = '';
+    el('noteContent').value = '';
+    store.save(notes);
+    renderTree();
+  }
 
-function renderNoteList() {
-    const list = document.getElementById('note-list');
-    list.innerHTML = "";
-    notes.forEach(note => {
-        const item = document.createElement('div');
-        item.className = 'note-item' + (note.id === currentNoteId ? ' active' : '');
-        item.setAttribute('data-id', note.id);
-        item.innerHTML = `<span>${note.title || "Sans titre"}</span>`;
-        item.onclick = () => loadNote(note.id);
-        list.appendChild(item);
-    });
-}
+  function init() {
+    el('btnSaveNote')  ?.addEventListener('click', saveNote);
+    el('btnDeleteNote')?.addEventListener('click', deleteNote);
+    el('btnNewNote')   ?.addEventListener('click', () => newNote());
+    el('btnNewFolder') ?.addEventListener('click', newFolder);
+    renderTree();
+  }
 
-function saveToDisk() { localStorage.setItem('inkrypt_notes', JSON.stringify(notes)); }
-
-window.filterNotes = function() {
-    const term = document.getElementById('note-search').value.toLowerCase();
-    document.querySelectorAll('.note-item').forEach(item => {
-        item.style.display = item.innerText.toLowerCase().includes(term) ? 'block' : 'none';
-    });
-};
+  return { init, renderTree };
+})();
