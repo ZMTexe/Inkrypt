@@ -1293,3 +1293,248 @@ footer {
     padding: .95rem;
   }
 }
+
+/* ===== AMÉLIORATIONS GÉNÉRATEUR - SÉPARATION VISUELLE & ANIMATIONS ===== */
+
+/* Conteneur principal du générateur avec card style */
+#section-generator {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Animation de fade in */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Card pour le mot de passe généré */
+#section-generator .gen-output-card {
+    background: rgba(0, 255, 157, 0.03);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 255, 157, 0.1);
+    transition: all 0.3s ease;
+}
+
+#section-generator .gen-output-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 255, 157, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Card pour les paramètres */
+#section-generator .gen-params-card {
+    background: rgba(0, 255, 255, 0.02);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+#section-generator .gen-params-card:hover {
+    border-color: rgba(0, 255, 255, 0.4);
+    background: rgba(0, 255, 255, 0.04);
+}
+
+/* Titres de sections avec icônes */
+#section-generator .gen-section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#section-generator .gen-section-title::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.2);
+    }
+}
+
+/* Zone de texte du mot de passe généré */
+#section-generator #genPassword {
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 255, 157, 0.3);
+    border-radius: 8px;
+    color: var(--accent);
+    transition: all 0.3s ease;
+}
+
+#section-generator #genPassword:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 15px rgba(0, 255, 157, 0.3);
+    transform: scale(1.01);
+}
+
+/* Slider avec animation */
+#section-generator .gen-slider {
+    transition: all 0.3s ease;
+}
+
+#section-generator .gen-slider::-webkit-slider-thumb {
+    transition: all 0.2s ease;
+}
+
+#section-generator .gen-slider:hover::-webkit-slider-thumb {
+    transform: scale(1.2);
+    box-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+}
+
+#section-generator .gen-slider::-moz-range-thumb {
+    transition: all 0.2s ease;
+}
+
+#section-generator .gen-slider:hover::-moz-range-thumb {
+    transform: scale(1.2);
+    box-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+}
+
+/* Checkboxes avec animation */
+#section-generator input[type="checkbox"] {
+    transition: all 0.2s ease;
+}
+
+#section-generator input[type="checkbox"]:checked {
+    animation: checkBounce 0.3s ease;
+}
+
+@keyframes checkBounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+#section-generator label {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+#section-generator label:hover {
+    color: var(--accent);
+    transform: translateX(3px);
+}
+
+/* Bouton GÉNÉRER avec animation */
+#section-generator #btnGenerate2 {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+#section-generator #btnGenerate2::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+#section-generator #btnGenerate2:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+#section-generator #btnGenerate2:active {
+    transform: scale(0.95);
+}
+
+/* Animation de génération */
+@keyframes generating {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+#section-generator .generating {
+    animation: generating 0.8s ease-in-out 3;
+}
+
+/* Indicateur de force avec transitions */
+#section-generator .strength-bar {
+    transition: all 0.3s ease;
+}
+
+#section-generator .strength-fill {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: slideIn 0.6s ease;
+}
+
+@keyframes slideIn {
+    from {
+        width: 0;
+    }
+}
+
+#section-generator #genStrengthText {
+    transition: all 0.3s ease;
+    animation: fadeIn 0.5s ease;
+}
+
+/* Bouton copier avec feedback visuel */
+#section-generator #btnCopyGen {
+    transition: all 0.2s ease;
+}
+
+#section-generator #btnCopyGen:hover {
+    transform: scale(1.1) rotate(5deg);
+    color: var(--accent);
+}
+
+#section-generator #btnCopyGen:active {
+    transform: scale(0.9);
+}
+
+/* Responsive - ajustements pour mobile */
+@media (max-width: 768px) {
+    #section-generator .gen-output-card,
+    #section-generator .gen-params-card {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    #section-generator #genPassword {
+        font-size: 0.9rem;
+    }
+}
