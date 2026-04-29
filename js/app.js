@@ -98,3 +98,103 @@ document.addEventListener('DOMContentLoaded', () => {
 
   basculer(LS.get('inkrypt_page', 'cryptage'));
 });
+
+// ===== PASSWORD GENERATOR =====
+const genLength = document.getElementById('genLength');
+const genLengthValue = document.getElementById('genLengthValue');
+const genUppercase = document.getElementById('genUppercase');
+const genLowercase = document.getElementById('genLowercase');
+const genNumbers = document.getElementById('genNumbers');
+const genSymbols = document.getElementById('genSymbols');
+const genPassword = document.getElementById('genPassword');
+const btnGenerate = document.getElementById('btnGenerate');
+const btnCopyGen = document.getElementById('btnCopyGen');
+const genStrengthFill = document.getElementById('genStrengthFill');
+const genStrengthText = document.getElementById('genStrengthText');
+
+const CHARSET = {
+  upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+  lower: 'abcdefghijklmnopqrstuvwxyz',
+  numbers: '0123456789',
+  symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+};
+
+genLength?.addEventListener('input', () => {
+  genLengthValue.textContent = genLength.value;
+});
+
+function generatePassword() {
+  const length = parseInt(genLength.value);
+  let charset = '';
+  if (genUppercase.checked) charset += CHARSET.upper;
+  if (genLowercase.checked) charset += CHARSET.lower;
+  if (genNumbers.checked) charset += CHARSET.numbers;
+  if (genSymbols.checked) charset += CHARSET.symbols;
+  
+  if (!charset) {
+    genPassword.value = 'Sélectionnez au moins une option';
+    return;
+  }
+  
+  const array = new Uint8Array(length);
+  crypto.getRandomValues(array);
+  let password = '';
+  for (let i = 0; i < length; i++) {
+    password += charset[array[i] % charset.length];
+  }
+  
+  genPassword.value = password;
+  updateStrength(password);
+}
+
+function updateStrength(pwd) {
+  let s = 0;
+  if (pwd.length >= 12) s++;
+  if (pwd.length >= 16) s++;
+  if (/[a-z]/.test(pwd)) s++;
+  if (/[A-Z]/.test(pwd)) s++;
+  if (/[0-9]/.test(pwd)) s++;
+  if (/[^a-zA-Z0-9]/.test(pwd)) s++;
+  
+  const pct = (s / 6) * 100;
+  genStrengthFill.style.width = `${pct}%`;
+  
+  if (s <= 2) {
+    genStrengthFill.style.background = 'var(--danger)';
+    genStrengthText.textContent = 'FAIBLE';
+  } else if (s <= 4) {
+    genStrengthFill.style.background = 'var(--accent2)';
+    genStrengthText.textContent = 'MOYEN';
+  } else {
+    genStrengthFill.style.background = 'var(--accent)';
+    genStrengthText.textContent = 'FORT';
+  }
+}
+
+btnGenerate?.addEventListener('click', generatePassword);
+
+btnCopyGen?.addEventListener('click', () => {
+  if (genPassword.value) {
+    navigator.clipboard.writeText(genPassword.value).then(showToast);
+  }
+});
+
+// ===== COPY WITH TIMEOUT =====
+let clipboardTimeout = null;
+
+document.getElementById('btnCopy')?.addEventListener('click', () => {
+  const result = elResult?.value;
+  if (!result) return;
+  
+  navigator.clipboard.writeText(result).then(() => {
+    showToast();
+    
+    // Clear existing timeout
+    if (clipboardTimeout) clearTimeout(clipboardTimeout);
+    
+    // Auto-clear clipboard after 30s
+    clipboardTimeout = setTimeout(() => {
+      navigator.clipboard.writeText('').catch(() => {});
+    }, 30000);
+  });
+});

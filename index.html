@@ -41,6 +41,17 @@
           <span class="nav-label">Chiffrement</span>
         </button>
       </li>
+            <li>
+        <button class="nav-btn" onclick="basculer('generator')" data-page="generator" id="tab-generator">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M9 3v18M15 3v18M3 9h18M3 15h18"/>
+            </svg>
+          </span>
+          <span class="nav-label">Générateur</span>
+        </button>
+      </li>
       <li>
         <button class="nav-btn" onclick="basculer('notes')" data-page="notes" id="tab-notes">
           <span class="nav-icon">
@@ -152,6 +163,94 @@
       <footer>
         <span>Inkrypt · Tout le traitement est local · Aucune donnée transmise</span>
       </footer>
+    </div>
+
+        <div id="section-generator" style="display:none">
+      <div class="notes-topbar">
+        <span class="notes-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <path d="M9 3v18M15 3v18M3 9h18M3 15h18"/>
+          </svg>
+          GÉNÉRATEUR DE MOTS DE PASSE
+        </span>
+        <button class="btn-home" onclick="basculer('cryptage')" title="Retour Cryptage">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          Chiffrement
+        </button>
+      </div>
+
+      <main style="padding: 2rem 1.5rem; max-width: 680px; margin: 0 auto;">
+        <div class="card">
+          <div class="field-group">
+            <label>
+              <span class="label-icon">▸</span> MOT DE PASSE GÉNÉRÉ
+            </label>
+            <div class="result-wrap">
+              <textarea id="genPassword" placeholder="Cliquez sur Générer..." rows="2" readonly spellcheck="false"></textarea>
+              <button class="btn-copy" id="btnCopyGen" title="Copier le mot de passe">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2"/>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="genLength">
+              <span class="label-icon">▸</span> LONGUEUR : <span id="genLengthValue">16</span>
+            </label>
+            <input type="range" id="genLength" min="8" max="64" value="16" class="gen-slider" />
+          </div>
+
+          <div class="field-group">
+            <label>
+              <span class="label-icon">▸</span> CARACTÈRES
+            </label>
+            <div class="gen-options">
+              <label class="gen-checkbox">
+                <input type="checkbox" id="genUppercase" checked />
+                <span>Majuscules (A-Z)</span>
+              </label>
+              <label class="gen-checkbox">
+                <input type="checkbox" id="genLowercase" checked />
+                <span>Minuscules (a-z)</span>
+              </label>
+              <label class="gen-checkbox">
+                <input type="checkbox" id="genNumbers" checked />
+                <span>Chiffres (0-9)</span>
+              </label>
+              <label class="gen-checkbox">
+                <input type="checkbox" id="genSymbols" checked />
+                <span>Symboles (!@#$%...)</span>
+              </label>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" id="btnGenerate">
+            <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"/>
+              <polyline points="1 20 1 14 7 14"/>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+            </svg>
+            GÉNÉRER
+          </button>
+
+          <div class="gen-strength" id="genStrengthBar">
+            <div class="gen-strength-label">
+              <span>🔒 Force :</span>
+              <span id="genStrengthText">-</span>
+            </div>
+            <div class="strength-bar">
+              <div class="strength-fill" id="genStrengthFill"></div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
 
     <div id="section-notes" style="display:none">
