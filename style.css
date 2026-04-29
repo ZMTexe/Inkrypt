@@ -997,6 +997,7 @@ footer {
   background: var(--border);
   outline: none;
   -webkit-appearance: none;
+    appearance: none;
   cursor: pointer;
 }
 
@@ -1272,7 +1273,6 @@ footer {
   .notes-layout {
     grid-template-rows: 190px 1fr;
   }
-}
 
 @media (max-width: 380px) {
   .mobile-topbar {
@@ -1292,3 +1292,4 @@ footer {
   .card {
     padding: .95rem;
   }
+}
