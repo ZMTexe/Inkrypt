@@ -28,8 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
   window.basculer = function(page) {
     const crypt = document.getElementById('section-cryptage');
     const notes = document.getElementById('section-notes');
+        const generator = document.getElementById('section-generator');
     if (crypt) crypt.style.display = page === 'cryptage' ? 'flex' : 'none';
     if (notes) notes.style.display = page === 'notes'    ? 'flex' : 'none';
+        if (generator) generator.style.display = page === 'generator' ? 'flex' : 'none';
     document.querySelectorAll('.nav-btn[data-page]').forEach(b =>
       b.classList.toggle('active', b.dataset.page === page));
     LS.set('inkrypt_page', page);
