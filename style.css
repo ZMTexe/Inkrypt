@@ -1928,3 +1928,49 @@ footer {
     min-height: 70px;
   }
 }
+
+
+
+/* ===== AMÉLIORATION GÉNÉRATEUR - LAYOUT CENTRÉ ===== */
+
+/* Positionner le bouton Home en haut à droite */
+#section-generator .notes-topbar {
+  position: fixed;
+  top: 1rem;
+  right: 2rem;
+  left: auto;
+  width: auto;
+  background: transparent;
+  padding: 0;
+  border: none;
+}
+
+#section-generator .notes-topbar .btn-home {
+  margin: 0;
+}
+
+/* Titre centré en haut */
+#section-generator .page-header {
+  text-align: center;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+}
+
+/* Centrer le contenu principal */
+#section-generator main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 200px);
+  padding: 2rem;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+/* Limiter la largeur des cartes */
+#section-generator .gen-output-card,
+#section-generator .gen-params-card {
+  max-width: 680px;
+  width: 100%;
+}

@@ -200,7 +200,7 @@
         </button>
       </div>
 
-      <main style="padding: 2rem 1.5rem; max-width: 680px; margin: 0 auto;">
+      <main>
         <div class=" gen-output-cardcard">
           <div class="field-group">
                             <div class="gen-section-title">Mot de passe généré</div>
@@ -232,20 +232,20 @@
             <label>
               <span class="label-icon">▸</span> CARACTÈRES
             </label>
-            <div class="gen-checkboxes">
-              <label class="gen-checkbox-wrapper">
+            <div class="gen-options">
+              <label class="gen-checkbox">
                 <input type="checkbox" id="genUppercase" checked />
                 <span>Majuscules (A-Z)</span>
               </label>
-              <label class="gen-checkbox-wrapper">
+              <label class="gen-checkbox">
                 <input type="checkbox" id="genLowercase" checked />
                 <span>Minuscules (a-z)</span>
               </label>
-              <label class="gen-checkbox-wrapper">
+              <label class="gen-checkbox">
                 <input type="checkbox" id="genNumbers" checked />
                 <span>Chiffres (0-9)</span>
               </label>
-              <label class="gen-checkbox-wrapper">
+              <label class="gen-checkbox">
                 <input type="checkbox" id="genSymbols" checked />
                 <span>Symboles (!@#$%...)</span>
               </label>
@@ -348,35 +348,7 @@
   <script src="js/obsidian.js"></script>
   <script src="js/generator.js"></script>
   <script src="js/app.js"></script>
+    <script src="js/ui.js"></script>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const body = document.body;
-      const nav = document.getElementById('mainNav');
-      const overlay = document.getElementById('mobileOverlay');
-      const menuBtn = document.getElementById('mobileMenuBtn');
-
-      function closeMobileNav() {
-        body.classList.remove('mobile-nav-open');
-      }
-
-      function toggleMobileNav() {
-        body.classList.toggle('mobile-nav-open');
-      }
-
-      menuBtn?.addEventListener('click', toggleMobileNav);
-      overlay?.addEventListener('click', closeMobileNav);
-
-      document.querySelectorAll('.nav-btn, .btn-home').forEach(btn => {
-        btn.addEventListener('click', () => {
-          if (window.innerWidth <= 768) closeMobileNav();
-        });
-      });
-
-      window.addEventListener('resize', () => {
-        if (window.innerWidth > 768) closeMobileNav();
-      });
-    });
-  </script>
 </body>
 </html>
