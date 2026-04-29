@@ -1299,6 +1299,12 @@ footer {
 /* Conteneur principal du générateur avec card style */
 #section-generator {
     animation: fadeIn 0.5s ease-in-out;
+      display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
 }
 
 /* Animation de fade in */
