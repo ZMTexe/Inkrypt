@@ -5,21 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>INKRYPT — Chiffrement AES-GCM</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="icon" type="image/x-icon"        href="assets/favicon.ico" />
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
-  <link rel="apple-touch-icon" sizes="180x180"    href="assets/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
 </head>
 <body class="page-cryptage">
 
-<canvas id="matrix-bg"></canvas>
-<div class="noise"></div>
-<div class="grid-bg"></div>
+  <canvas id="matrix-bg"></canvas>
+  <div class="noise"></div>
+  <div class="grid-bg"></div>
 
-  <!-- ══════════════════════════════════════
-       SIDEBAR
-  ══════════════════════════════════════ -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
   <nav class="main-nav" id="mainNav">
-
     <div class="nav-header">
       <div class="nav-logo">
         <span class="nl-bracket">[</span><span class="nl-k accent">K</span><span class="nl-bracket">]</span>
@@ -33,22 +31,36 @@
 
     <ul class="nav-list">
       <li>
-        <button class="nav-btn active" onclick="basculer('cryptage')" data-page="cryptage">
+        <button class="nav-btn active" onclick="basculer('cryptage')" data-page="cryptage" id="tab-cryptage">
           <span class="nav-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
             </svg>
           </span>
           <span class="nav-label">Chiffrement</span>
         </button>
       </li>
+            <li>
+        <button class="nav-btn" onclick="basculer('generator')" data-page="generator" id="tab-generator">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M9 3v18M15 3v18M3 9h18M3 15h18"/>
+            </svg>
+          </span>
+          <span class="nav-label">Générateur</span>
+        </button>
+      </li>
       <li>
-        <button class="nav-btn" onclick="basculer('notes')" data-page="notes">
+        <button class="nav-btn" onclick="basculer('notes')" data-page="notes" id="tab-notes">
           <span class="nav-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <line x1="10" y1="9" x2="8" y2="9"/>
             </svg>
           </span>
           <span class="nav-label">Notes</span>
@@ -59,17 +71,22 @@
     <div class="nav-footer">
       <div class="nav-version">v1.0 · AES-256</div>
     </div>
-
   </nav>
 
-  <!-- ══════════════════════════════════════
-       PAGES WRAPPER
-  ══════════════════════════════════════ -->
   <div class="pages-wrapper">
 
-    <!-- ── PAGE CRYPTAGE ── -->
-    <div id="section-cryptage">
+    <div class="mobile-topbar">
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Ouvrir le menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <div class="mobile-brand">INK<span class="accent">RYPT</span></div>
+    </div>
 
+    <div id="section-cryptage">
       <header>
         <div class="logo">
           <span class="logo-bracket">[</span>
@@ -95,9 +112,12 @@
               <span class="key-hint">min. 8 caractères</span>
             </label>
             <div class="input-row">
-              <input type="password" id="secret" placeholder="Il faut une clé Robuste" autocomplete="off" />
+              <input type="password" id="secret" placeholder="Il faut une clé robuste" autocomplete="off" />
               <button class="btn-icon" id="togglePwd" title="Afficher/Masquer" aria-label="toggle password">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
               </button>
             </div>
             <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
@@ -143,12 +163,97 @@
       <footer>
         <span>Inkrypt · Tout le traitement est local · Aucune donnée transmise</span>
       </footer>
+    </div>
 
-    </div><!-- /#section-cryptage -->
+        <div id="section-generator" style="display:none">
+      <div class="notes-topbar">
+        <span class="notes-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <path d="M9 3v18M15 3v18M3 9h18M3 15h18"/>
+          </svg>
+          GÉNÉRATEUR DE MOTS DE PASSE
+        </span>
+        <button class="btn-home" onclick="basculer('cryptage')" title="Retour Cryptage">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          Chiffrement
+        </button>
+      </div>
 
-    <!-- ── PAGE NOTES ── -->
+      <main style="padding: 2rem 1.5rem; max-width: 680px; margin: 0 auto;">
+        <div class="card">
+          <div class="field-group">
+            <label>
+              <span class="label-icon">▸</span> MOT DE PASSE GÉNÉRÉ
+            </label>
+            <div class="result-wrap">
+              <textarea id="genPassword" placeholder="Cliquez sur Générer..." rows="2" readonly spellcheck="false"></textarea>
+              <button class="btn-copy" id="btnCopyGen" title="Copier le mot de passe">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2"/>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="genLength">
+              <span class="label-icon">▸</span> LONGUEUR : <span id="genLengthValue">16</span>
+            </label>
+            <input type="range" id="genLength" min="8" max="64" value="16" class="gen-slider" />
+          </div>
+
+          <div class="field-group">
+            <label>
+              <span class="label-icon">▸</span> CARACTÈRES
+            </label>
+            <div class="gen-options">
+              <label class="gen-checkbox">
+                <input type="checkbox" id="genUppercase" checked />
+                <span>Majuscules (A-Z)</span>
+              </label>
+              <label class="gen-checkbox">
+                <input type="checkbox" id="genLowercase" checked />
+                <span>Minuscules (a-z)</span>
+              </label>
+              <label class="gen-checkbox">
+                <input type="checkbox" id="genNumbers" checked />
+                <span>Chiffres (0-9)</span>
+              </label>
+              <label class="gen-checkbox">
+                <input type="checkbox" id="genSymbols" checked />
+                <span>Symboles (!@#$%...)</span>
+              </label>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" id="btnGenerate">
+            <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"/>
+              <polyline points="1 20 1 14 7 14"/>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+            </svg>
+            GÉNÉRER
+          </button>
+
+          <div class="gen-strength" id="genStrengthBar">
+            <div class="gen-strength-label">
+              <span>🔒 Force :</span>
+              <span id="genStrengthText">-</span>
+            </div>
+            <div class="strength-bar">
+              <div class="strength-fill" id="genStrengthFill"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
     <div id="section-notes" style="display:none">
-
       <div class="notes-topbar">
         <span class="notes-title">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16">
@@ -170,11 +275,15 @@
         <aside class="notes-explorer">
           <div class="explorer-actions">
             <button class="btn-ghost btn-sm" id="btnNewFolder">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+              </svg>
               Dossier
             </button>
             <button class="btn-ghost btn-sm" id="btnNewNote">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M12 5v14M5 12h14"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
               Note
             </button>
           </div>
@@ -182,40 +291,69 @@
         </aside>
 
         <section class="notes-editor">
-          <input  type="text" id="noteTitle"   class="note-title-input" placeholder="Titre de la note…" />
-          <textarea            id="noteContent" class="note-content"     placeholder="Écrivez ici…" spellcheck="false"></textarea>
+          <input type="text" id="noteTitle" class="note-title-input" placeholder="Titre de la note…" />
+          <textarea id="noteContent" class="note-content" placeholder="Écrivez ici…" spellcheck="false"></textarea>
           <div class="editor-bar">
             <button class="btn btn-primary btn-sm-full" id="btnSaveNote">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+              </svg>
               Sauvegarder
             </button>
             <button class="btn btn-danger btn-sm-full" id="btnDeleteNote">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+              </svg>
               Supprimer
             </button>
             <span class="note-status" id="noteStatus"></span>
           </div>
         </section>
       </div>
-      <div class="strength"><div id="strengthFill"></div></div>
     </div>
-
-    <div class="actions">
-      <button id="btnEncrypt" class="btn primary">CHIFFRER</button>
-      <button id="btnDecrypt" class="btn secondary">DÉCHIFFRER</button>
-    </div>
-
-    </div><!-- /#section-notes -->
-
-  </div><!-- /.pages-wrapper -->
 
   </div>
-</main>
 
-    <!-- built with ♥ -->
-       <script src="js/matrix.js"></script>
+  <div class="toast" id="toast">
+    <span class="toast-icon">✓</span> Copié dans le presse-papiers
+  </div>
+
+  <script src="js/matrix.js"></script>
   <script src="js/crypt.js"></script>
   <script src="js/obsidian.js"></script>
   <script src="js/app.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const body = document.body;
+      const nav = document.getElementById('mainNav');
+      const overlay = document.getElementById('mobileOverlay');
+      const menuBtn = document.getElementById('mobileMenuBtn');
+
+      function closeMobileNav() {
+        body.classList.remove('mobile-nav-open');
+      }
+
+      function toggleMobileNav() {
+        body.classList.toggle('mobile-nav-open');
+      }
+
+      menuBtn?.addEventListener('click', toggleMobileNav);
+      overlay?.addEventListener('click', closeMobileNav);
+
+      document.querySelectorAll('.nav-btn, .btn-home').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (window.innerWidth <= 768) closeMobileNav();
+        });
+      });
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) closeMobileNav();
+      });
+    });
+  </script>
 </body>
 </html>
