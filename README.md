@@ -40,6 +40,7 @@ Inkrypt/
     ├── crypt.js        # Chiffrement / Déchiffrement AES-256-GCM
     ├── obsidian.js     # Gestion des notes (CRUD + arbre de fichiers)
     └── app.js          # Navigation, sidebar, initialisation globale
+        ├── ui.js           # Gestion de l'interface et navigation mobile
 ```
 
 ---
