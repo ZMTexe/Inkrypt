@@ -34,4 +34,18 @@ const Crypt = (() => {
   }
 
   return { encrypt, decrypt };
+
+    // Générer une clé sécurisée aléatoire
+  function generateSecureKey(length = 32) {
+    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+    const randomValues = new Uint8Array(length);
+    crypto.getRandomValues(randomValues);
+    let key = '';
+    for (let i = 0; i < length; i++) {
+      key += charset[randomValues[i] % charset.length];
+    }
+    return key;
+  }
+
+    return { encrypt, decrypt, generateSecureKey };
 })();

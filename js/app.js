@@ -200,3 +200,16 @@ document.getElementById('btnCopy')?.addEventListener('click', () => {
     }, 30000);
   });
 });
+
+// ===== GENERATE KEY BUTTON =====
+
+const generateKeyBtn = document.getElementById('generateKeyBtn');
+const secretInput = document.getElementById('secret');
+
+if (generateKeyBtn && secretInput) {
+  generateKeyBtn.addEventListener('click', () => {
+    const newKey = Crypt.generateSecureKey(32);
+    secretInput.value = newKey;
+    showToast('Clé générée avec succès!');
+  });
+}
