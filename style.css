@@ -18,7 +18,97 @@
   --sb-w: 220px;
   --sb-w-sm: 60px;
   --mobile-topbar-h: 60px;
+
+
+/* ===== LAYOUT GLOBAL STRUCTURE ===== */
+
+/* Container principal pour toutes les pages */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
 }
+
+/* Wrapper de contenu avec max-width pour centrage */
+.pages-wrapper {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+  flex: 1;
+}
+
+/* Sections principales */
+.page-section {
+  animation: fadeIn 0.5s ease-in-out;
+  padding: 2rem 0;
+}
+
+/* Header uniforme */
+header {
+  text-align: center;
+  padding: 3rem 0 2rem;
+  margin-bottom: 2rem;
+}
+
+header .logo {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: 2px;
+}
+
+header .logo-bracket {
+  color: var(--accent);
+  font-weight: 300;
+}
+
+header .logo-text .accent {
+  color: var(--accent);
+}
+
+header .tagline {
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Main content area */
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Cards uniformisées */
+.card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 2.5rem;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(123, 97, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(123, 97, 255, 0.15);
+}
+
+/* Footer uniforme */
+footer {
+  text-align: center;
+  padding: 2rem 0;
+  margin-top: 4rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}}
 
 *, *::before, *::after {
   box-sizing: border-box;
